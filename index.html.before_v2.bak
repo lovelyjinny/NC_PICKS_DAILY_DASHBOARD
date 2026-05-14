@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>이랜드 NC PICKS</title>
+<!-- PWA 설정 -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1C1A17">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NC PICKS">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="144x144" href="icons/icon-144.png">
+<link rel="apple-touch-icon" sizes="128x128" href="icons/icon-128.png">
+<!-- 스플래시 스크린 색상 (iOS) -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1C1A17;--bg2:#252220;--bg3:#2E2A26;--bg4:#3A3530;
+  --border:#3E3830;--border2:#4E4640;
+  --text:#F0EDE8;--text2:#B8B0A5;--text3:#7A7268;
+  --teal:#4ECDC4;--teal-bg:rgba(78,205,196,0.12);
+  --pink:#FF6B9D;--pink-bg:rgba(255,107,157,0.12);
+  --yellow:#FFD166;--yellow-bg:rgba(255,209,102,0.12);
+  --purple:#B48FE0;--purple-bg:rgba(180,143,224,0.12);
+  --green:#6BCB77;--green-bg:rgba(107,203,119,0.12);
+  --red:#FF6B6B;--red-bg:rgba(255,107,107,0.12);
+  --nav-h:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow-x:hidden}
+body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);font-size:13px}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* ══ 데스크탑: 사이드바 레이아웃 ══ */
+@media(min-width:768px){
+  .sidebar{position:fixed;top:0;left:0;width:200px;height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100}
+  .main{margin-left:200px}
+  .bottom-nav{display:none!important}
+  .topbar{padding:11px 24px}
+  .fbar{padding:9px 24px}
+  .body{padding:18px 24px}
+  .krow{grid-template-columns:repeat(4,1fr)}
+  .krow5{grid-template-columns:repeat(5,1fr)}
+  .sum-row{grid-template-columns:repeat(4,1fr)}
+  .g2{grid-template-columns:3fr 2fr}
+  .g2e{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:1fr 1fr 1fr}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .type-grid{grid-template-columns:repeat(4,1fr)}
+  .dp{width:660px}
+}
+
+/* ══ 모바일 레이아웃 ══ */
+@media(max-width:767px){
+  .sidebar{display:none!important}
+  .main{margin-left:0;padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom))}
+  .topbar{padding:10px 16px}
+  .fbar{padding:8px 16px;flex-wrap:wrap;gap:8px}
+  .fbar .fright{width:100%;justify-content:flex-end}
+  .body{padding:12px 14px}
+  .krow,.krow5{grid-template-columns:repeat(2,1fr)}
+  .sum-row{grid-template-columns:repeat(2,1fr)}
+  .g2,.g2e,.g3,.g4{grid-template-columns:1fr}
+  .type-grid{grid-template-columns:repeat(2,1fr)}
+  .dp{width:100%;border-left:none;border-top:1px solid var(--border2)}
+  .overlay{align-items:flex-end}
+  @keyframes slideIn{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .page-title{font-size:15px}
+  .kpi-v{font-size:20px}
+  .sum-num{font-size:26px}
+  .tc-amt{font-size:18px}
+  .card{padding:12px}
+  .tbl{font-size:11px}
+  .tbl th,.tbl td{padding:6px 6px}
+}
+
+/* ══ 공통 ══ */
+.logo-wrap{padding:22px 18px 16px;border-bottom:1px solid var(--border)}
+.logo-e{font-size:22px;font-weight:900;color:var(--text);letter-spacing:-1px}
+.logo-nc{font-size:10px;color:var(--teal);letter-spacing:2px;font-weight:600}
+.logo-sub{font-size:9px;color:var(--text3);letter-spacing:1.5px;margin-top:1px;text-transform:uppercase}
+.nav{flex:1;padding:12px 8px;overflow-y:auto}
+.nav-group{font-size:9px;color:var(--text3);letter-spacing:2px;padding:10px 10px 4px;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;cursor:pointer;color:var(--text3);font-size:12px;margin-bottom:2px;transition:all .15s;position:relative}
+.nav-item:hover{background:rgba(255,255,255,0.04);color:var(--text2)}
+.nav-item.on{background:var(--teal-bg);color:var(--teal)}
+.nav-item.on::before{content:"";position:absolute;left:0;top:25%;height:50%;width:2px;background:var(--teal);border-radius:2px}
+.nav-icon{font-size:13px;flex-shrink:0}
+.sidebar-foot{padding:12px 18px;border-top:1px solid var(--border)}
+.live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:5px;box-shadow:0 0 5px var(--green)}
+.live-txt{font-size:10px;color:var(--text3)}
+.date-txt{font-size:10px;color:var(--text3);font-family:"DM Mono",monospace;margin-top:3px}
+
+/* ── 탑바 ── */
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.page-title{font-size:18px;font-weight:700;color:var(--text)}
+.topbar-r{display:flex;align-items:center;gap:6px}
+.chip{font-size:10px;padding:3px 8px;border-radius:20px;border:1px solid var(--border2);color:var(--text2);font-family:"DM Mono",monospace}
+.chip.live{border-color:var(--green);color:var(--green);background:var(--green-bg)}
+.chip.warn{border-color:var(--red);color:var(--red);background:var(--red-bg)}
+.chip.date{border-color:var(--teal);color:var(--teal);background:var(--teal-bg)}
+
+/* ── 필터 바 ── */
+.fbar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.fl{font-size:10px;color:var(--text3);flex-shrink:0}
+.type-filter{display:flex;gap:4px;flex-wrap:wrap}
+.tf-btn{font-size:10px;padding:4px 10px;border-radius:20px;border:1px solid var(--border2);color:var(--text3);background:transparent;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
+.tf-btn:hover{color:var(--text2);background:var(--bg3)}
+.tf-btn.on{background:var(--teal-bg);border-color:var(--teal);color:var(--teal);font-weight:600}
+.fright{display:flex;align-items:center;gap:6px;margin-left:auto}
+.prog-label{font-size:10px;color:var(--text3);white-space:nowrap}
+.prog-bg{width:60px;height:3px;background:var(--bg4);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--purple));border-radius:2px}
+.prog-num{font-size:11px;font-weight:700;color:var(--teal);font-family:"DM Mono",monospace}
+
+/* ── 본문 ── */
+.body{min-height:calc(100vh - 120px)}
+.page{display:none}.page.on{display:block}
+.gap{margin-bottom:10px}
+
+/* ── KPI ── */
+.krow{display:grid;gap:8px;margin-bottom:12px}
+.krow5{display:grid;gap:8px;margin-bottom:12px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;position:relative;overflow:hidden;transition:all .15s}
+.kpi:hover{border-color:var(--border2)}
+.kpi-l{font-size:9px;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;font-weight:500}
+.kpi-v{font-family:"DM Mono",monospace;line-height:1;font-weight:700}
+.kpi-d{font-size:10px;margin-top:4px;color:var(--text3)}
+.kpi-acc{position:absolute;right:10px;top:10px;font-size:16px;opacity:.5}
+
+/* ── 카드 ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
+.card-t{font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;font-weight:600}
+.g2,.g2e,.g3,.g4{display:grid;gap:10px;margin-bottom:10px}
+.sum-row{display:grid;gap:8px;margin-bottom:12px}
+.sum-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;position:relative;overflow:hidden}
+.sum-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px}
+.sc1::before{background:linear-gradient(90deg,var(--teal),#2aa8a0)}
+.sc2::before{background:linear-gradient(90deg,var(--purple),#8048c0)}
+.sc3::before{background:linear-gradient(90deg,var(--yellow),#e5b030)}
+.sc4::before{background:linear-gradient(90deg,var(--pink),#e0457a)}
+.sum-dot{width:6px;height:6px;border-radius:50%;margin-bottom:6px}
+.sum-label{font-size:10px;color:var(--text2);margin-bottom:5px;font-weight:500}
+.sum-num{font-family:"DM Mono",monospace;font-weight:700;line-height:1}
+.sum-sub{font-size:10px;color:var(--text3);margin-top:4px}
+
+/* ── 바 ── */
+.br{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.bn{width:72px;font-size:11px;color:var(--text2);flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bg2b{flex:1;background:rgba(255,255,255,0.04);border-radius:2px;height:5px;overflow:hidden}
+.bf{height:100%;border-radius:2px}
+.bv{width:46px;font-size:11px;text-align:right;font-family:"DM Mono",monospace;color:var(--text2)}
+
+/* ── 테이블 ── */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{color:var(--text3);font-weight:500;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:5px 6px;border-bottom:1px solid var(--border);text-align:left}
+.tbl td{padding:7px 6px;border-bottom:1px solid var(--border);color:var(--text2)}
+.tbl td:first-child{color:var(--text)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,0.02);cursor:pointer}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+/* ── 필 ── */
+.pill{display:inline-block;font-size:9px;padding:2px 6px;border-radius:20px;font-family:"DM Mono",monospace}
+.pg{background:var(--green-bg);color:var(--green);border:1px solid rgba(107,203,119,.2)}
+.pr{background:var(--red-bg);color:var(--red);border:1px solid rgba(255,107,107,.2)}
+.pa{background:var(--yellow-bg);color:var(--yellow);border:1px solid rgba(255,209,102,.2)}
+
+/* ── 유형 카드 ── */
+.type-grid{display:grid;gap:8px;margin-bottom:12px}
+.tc{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;transition:all .15s}
+.tc:hover{border-color:var(--border2)}
+.tc-bar{height:2px;width:24px;border-radius:1px;margin-bottom:8px}
+.tc-name{font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}
+.tc-amt{font-family:"DM Mono",monospace;font-weight:700;margin-bottom:3px}
+.tc-sub{font-size:9px;color:var(--text3);font-family:"DM Mono",monospace}
+
+/* ── 범례 ── */
+.leg{display:flex;gap:8px;font-size:9px;color:var(--text3);flex-wrap:wrap}
+.leg span{display:flex;align-items:center;gap:3px}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0}
+.warn-box{background:var(--red-bg);border:1px solid rgba(255,107,107,.2);border-radius:8px;padding:10px 12px;font-size:10px;color:var(--red);margin-top:8px;font-family:"DM Mono",monospace}
+
+/* ══ 하단 네비 (모바일 전용) ══ */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--bg2);
+  border-top:1px solid var(--border);
+  display:flex;
+  padding-bottom:env(safe-area-inset-bottom);
+  z-index:100;
+}
+.bn-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:8px 4px;cursor:pointer;
+  color:var(--text3);transition:all .15s;border:none;background:none;
+  font-family:inherit;
+}
+.bn-item.on{color:var(--teal)}
+.bn-icon{font-size:18px;margin-bottom:2px}
+.bn-label{font-size:9px;letter-spacing:.3px;font-weight:500}
+.bn-item.on .bn-label{color:var(--teal)}
+
+/* ══ 상세 패널 ══ */
+.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);z-index:200;display:none;justify-content:flex-end}
+.overlay.open{display:flex}
+.dp{height:100vh;background:var(--bg2);border-left:1px solid var(--border2);overflow-y:auto;animation:slideIn .2s ease}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+@media(max-width:767px){
+  .overlay{align-items:flex-end}
+  .dp{width:100%!important;height:90vh;border-left:none;border-top:1px solid var(--border2);border-radius:16px 16px 0 0}
+  @keyframes slideIn{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .dp-hdr::before{content:"";display:block;width:36px;height:3px;background:var(--border2);border-radius:2px;margin:0 auto 14px}
+}
+.dp-hdr{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:10}
+.dp-name{font-size:18px;font-weight:700;color:var(--text)}
+.dp-meta{font-size:10px;color:var(--text3);margin-top:2px}
+.dp-close{width:26px;height:26px;border-radius:6px;border:1px solid var(--border2);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text3);flex-shrink:0}
+.dp-body{padding:16px 20px}
+.dp-krow{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+@media(min-width:500px){.dp-krow{grid-template-columns:repeat(4,1fr)}}
+.dp-kpi{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.dp-kpi-l{font-size:8px;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+.dp-kpi-v{font-size:16px;font-weight:700;font-family:"DM Mono",monospace;line-height:1}
+.dp-kpi-s{font-size:9px;color:var(--text3);margin-top:3px}
+.dp-sec{margin-bottom:14px}
+.dp-sec-title{font-size:10px;color:var(--text3);letter-spacing:.5px;font-weight:600;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.dp-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.dp-tbl th{color:var(--text3);font-weight:400;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:5px 6px;border-bottom:1px solid var(--border);text-align:left}
+.dp-tbl td{padding:6px 6px;border-bottom:1px solid var(--border);color:var(--text2);font-family:"DM Mono",monospace}
+.dp-tbl td:first-child{font-family:"Noto Sans KR",sans-serif;color:var(--text)}
+.dp-tbl tr:last-child td{border-bottom:none}
+.dp-ind{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;margin-bottom:7px}
+.dp-ind-l{display:flex;align-items:center;gap:8px}
+.ind-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ind-label{font-size:11px;color:var(--text);font-weight:500}
+.ind-desc{font-size:9px;color:var(--text3);margin-top:1px}
+.ind-badge{font-size:9px;padding:2px 8px;border-radius:10px;font-weight:600;flex-shrink:0}
+.b-ok{background:var(--green-bg);color:var(--green)}
+.b-warn{background:var(--yellow-bg);color:var(--yellow)}
+.b-alert{background:var(--red-bg);color:var(--red)}
+</style>
+</head>
+<body>
+
+<!-- 데스크탑 사이드바 -->
+<nav class="sidebar">
+  <div class="logo-wrap">
+    <div class="logo-e">ELAND</div>
+    <div class="logo-nc">NC PICKS</div>
+    <div class="logo-sub">상품기획 모니터링</div>
+  </div>
+  <div class="nav">
+    <div class="nav-group">실적</div>
+    <div class="nav-item on" onclick="GO('p0',this)"><span class="nav-icon">📊</span>일매출 현황</div>
+    <div class="nav-item" onclick="GO('p1',this)"><span class="nav-icon">🏪</span>지점별 실적</div>
+    <div class="nav-item" onclick="GO('p2',this)"><span class="nav-icon">🗂</span>지점 유형별</div>
+    <div class="nav-item" onclick="GO('p3',this)"><span class="nav-icon">📈</span>월별 트렌드</div>
+    <div class="nav-group">재고·물류</div>
+    <div class="nav-item" onclick="GO('p4',this)"><span class="nav-icon">📦</span>입고·판매</div>
+    <div class="nav-item" onclick="GO('p5',this)"><span class="nav-icon">🗃</span>재고 현황</div>
+    <div class="nav-group">픽스 전용</div>
+    <div class="nav-item" onclick="GO('p6',this)"><span class="nav-icon">⭐</span>픽스 평매출</div>
+  </div>
+  <div class="sidebar-foot">
+    <div><span class="live-dot"></span><span class="live-txt">LIVE DATA</span></div>
+    <div class="date-txt">2026-04-08 기준</div>
+  </div>
+</nav>
+
+<!-- 메인 -->
+<div class="main">
+  <!-- 탑바 -->
+  <div class="topbar">
+    <div class="page-title" id="page-title">일매출 현황</div>
+    <div class="topbar-r">
+      <span class="chip live">● LIVE</span>
+      <span class="chip date" id="date-chip">04-08</span>
+      <span class="chip warn" id="neg-chip" style="display:none"></span>
+    </div>
+  </div>
+
+  <!-- 필터 바 -->
+  <div class="fbar">
+    <span class="fl">유형</span>
+    <div class="type-filter">
+      <button class="tf-btn on" onclick="filterType('전체',this)">전체</button>
+      <button class="tf-btn" onclick="filterType('픽스',this)">픽스</button>
+      <button class="tf-btn" onclick="filterType('픽스 키즈',this)">키즈</button>
+      <button class="tf-btn" onclick="filterType('중간관리',this)">중간</button>
+      <button class="tf-btn" onclick="filterType('기타',this)">기타</button>
+    </div>
+    <div class="fright">
+      <div class="prog-bg"><div class="prog-fill" style="width:27%"></div></div>
+      <span class="prog-num">27%</span>
+    </div>
+  </div>
+
+  <div class="body">
+
+  <!-- P0 일매출 현황 -->
+  <div class="page on" id="p0">
+    <div class="krow">
+      <div class="kpi"><div class="kpi-acc">📈</div><div class="kpi-l">당월 누계</div><div class="kpi-v" id="k-tot" style="color:var(--teal);font-size:22px">—</div><div class="kpi-d" id="k-tot-d">—</div></div>
+      <div class="kpi"><div class="kpi-acc">🎯</div><div class="kpi-l">달성률</div><div class="kpi-v" id="k-rate" style="font-size:22px">—</div><div class="kpi-d" id="k-rate-d">—</div></div>
+      <div class="kpi"><div class="kpi-acc">📅</div><div class="kpi-l">전년 성장</div><div class="kpi-v" id="k-growth" style="font-size:22px">—</div><div class="kpi-d">YoY</div></div>
+      <div class="kpi"><div class="kpi-acc">🏆</div><div class="kpi-l">일 최고</div><div class="kpi-v" id="k-best" style="color:var(--purple);font-size:22px">—</div><div class="kpi-d" id="k-best-d">—</div></div>
+    </div>
+    <div class="sum-row">
+      <div class="sum-card sc1"><div class="sum-dot" style="background:var(--teal)"></div><div class="sum-label">남성</div><div class="sum-num" style="color:var(--teal);font-size:24px" id="s-m">—</div><div class="sum-sub" id="s-ms">—</div></div>
+      <div class="sum-card sc2"><div class="sum-dot" style="background:var(--purple)"></div><div class="sum-label">여성</div><div class="sum-num" style="color:var(--purple);font-size:24px" id="s-w">—</div><div class="sum-sub" id="s-ws">—</div></div>
+      <div class="sum-card sc3"><div class="sum-dot" style="background:var(--yellow)"></div><div class="sum-label">아동</div><div class="sum-num" style="color:var(--yellow);font-size:24px" id="s-k">—</div><div class="sum-sub" id="s-ks">—</div></div>
+      <div class="sum-card sc4"><div class="sum-dot" style="background:var(--pink)"></div><div class="sum-label">집계 지점</div><div class="sum-num" style="color:var(--pink);font-size:24px" id="s-br">—</div><div class="sum-sub">개 지점</div></div>
+    </div>
+    <div class="card">
+      <div class="card-t">일별 매출 추이<div class="leg"><span><span class="dot" style="background:var(--teal)"></span>실적</span><span><span style="width:12px;height:1.5px;background:var(--yellow);display:inline-block"></span>목표</span><span><span style="width:12px;height:1.5px;background:#555;display:inline-block"></span>전년</span></div></div>
+      <div style="position:relative;height:180px"><canvas id="c-daily"></canvas></div>
+    </div>
+    <div class="g2e">
+      <div class="card"><div class="card-t">셀별 실적</div><div style="position:relative;height:120px"><canvas id="c-cell-bar"></canvas></div></div>
+      <div class="card"><div class="card-t">셀별 구성<div id="cell-leg" style="display:flex;gap:6px;font-size:9px;color:var(--text3)"></div></div><div style="position:relative;height:120px"><canvas id="c-pie"></canvas></div></div>
+    </div>
+    <div class="g2e">
+      <div class="card"><div class="card-t">달성율 추이</div><div style="position:relative;height:120px"><canvas id="c-rate"></canvas></div></div>
+      <div class="card"><div class="card-t">YoY 성장율</div><div style="position:relative;height:120px"><canvas id="c-growth"></canvas></div></div>
+    </div>
+    <div class="card">
+      <div class="card-t">셀별 핵심 지표</div>
+      <div class="tbl-scroll"><table class="tbl"><tr><th>셀</th><th style="text-align:right">실적</th><th style="text-align:right">판매율</th><th style="text-align:right">TCR</th><th style="text-align:right">매총율</th></tr><tbody id="cell-tbl"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- P1 지점별 실적 -->
+  <div class="page" id="p1">
+    <div class="krow">
+      <div class="kpi"><div class="kpi-l">지점 수</div><div class="kpi-v" id="b-cnt" style="color:var(--teal);font-size:22px">—</div><div class="kpi-d">데이터 보유</div></div>
+      <div class="kpi"><div class="kpi-l">매출 1위</div><div class="kpi-v" id="b-top" style="font-size:15px;color:var(--yellow)">—</div><div class="kpi-d" id="b-top-a">—</div></div>
+      <div class="kpi"><div class="kpi-l">평균 판매율</div><div class="kpi-v" id="b-sell" style="color:var(--pink);font-size:22px">—</div><div class="kpi-d">전 지점</div></div>
+      <div class="kpi"><div class="kpi-l">평균 매총율</div><div class="kpi-v" id="b-mg" style="color:var(--purple);font-size:22px">—</div><div class="kpi-d">전 지점</div></div>
+    </div>
+    <div class="card"><div class="card-t">매출 TOP 15</div><div id="branch-bars"></div></div>
+    <div class="card">
+      <div class="card-t">지점별 실적 <span style="font-size:9px;color:var(--text3);font-weight:300">탭으로 상세</span></div>
+      <div class="tbl-scroll">
+        <table class="tbl"><tr><th>#</th><th>지점</th><th>유형</th><th style="text-align:right">실적</th><th style="text-align:right">판매율</th><th style="text-align:right">매총율</th></tr><tbody id="branch-tbl"></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- P2 유형별 -->
+  <div class="page" id="p2">
+    <div class="type-grid" id="type-cards"></div>
+    <div class="card">
+      <div class="card-t">유형별 일별 실적<div class="leg"><span><span class="dot" style="background:var(--teal)"></span>픽스</span><span><span class="dot" style="background:var(--purple)"></span>키즈</span><span><span class="dot" style="background:var(--yellow)"></span>중간</span><span><span class="dot" style="background:#555"></span>기타</span></div></div>
+      <div style="position:relative;height:180px"><canvas id="c-type"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-t">유형 × 셀</div>
+      <div class="tbl-scroll"><table class="tbl"><tr><th>유형</th><th>셀</th><th style="text-align:right">실적</th><th style="text-align:right">판매율</th><th style="text-align:right">매총율</th></tr><tbody id="type-tbl"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- P3 트렌드 -->
+  <div class="page" id="p3">
+    <div class="krow">
+      <div class="kpi"><div class="kpi-l">분석 기간</div><div class="kpi-v" style="font-size:18px;color:var(--teal)">16개월</div><div class="kpi-d">25.01~26.04</div></div>
+      <div class="kpi"><div class="kpi-l">최고 매출</div><div class="kpi-v" id="tr-best" style="color:var(--yellow);font-size:18px">—</div><div class="kpi-d" id="tr-best-d">—</div></div>
+      <div class="kpi"><div class="kpi-l">최근 매총율</div><div class="kpi-v" id="tr-mg" style="color:var(--pink);font-size:22px">—</div><div class="kpi-d">최근월</div></div>
+      <div class="kpi"><div class="kpi-l">최근 판매율</div><div class="kpi-v" id="tr-sr" style="color:var(--purple);font-size:22px">—</div><div class="kpi-d">최근월</div></div>
+    </div>
+    <div class="card"><div class="card-t">월별 매출 추이</div><div style="position:relative;height:180px"><canvas id="c-trend"></canvas></div></div>
+    <div class="g2e">
+      <div class="card"><div class="card-t">매총율 추이</div><div style="position:relative;height:140px"><canvas id="c-tr-mg"></canvas></div></div>
+      <div class="card"><div class="card-t">재고액 추이</div><div style="position:relative;height:140px"><canvas id="c-tr-st"></canvas></div></div>
+    </div>
+  </div>
+
+  <!-- P4 입고판매 -->
+  <div class="page" id="p4">
+    <div class="krow">
+      <div class="kpi"><div class="kpi-l">누계 입고량</div><div class="kpi-v" id="s-in" style="color:#4D9FFF;font-size:20px">—</div><div class="kpi-d">벤더입고</div></div>
+      <div class="kpi"><div class="kpi-l">누계 판매량</div><div class="kpi-v" id="s-sl" style="color:var(--teal);font-size:20px">—</div><div class="kpi-d">POS</div></div>
+      <div class="kpi"><div class="kpi-l">입판 비율</div><div class="kpi-v" id="s-rt" style="color:var(--yellow);font-size:20px">—</div><div class="kpi-d">판매÷입고</div></div>
+      <div class="kpi"><div class="kpi-l">최대 판매일</div><div class="kpi-v" id="s-best" style="color:var(--pink);font-size:20px">—</div><div class="kpi-d" id="s-best-d">—</div></div>
+    </div>
+    <div class="card">
+      <div class="card-t">일별 입고 vs 판매<div class="leg"><span><span class="dot" style="background:#4D9FFF"></span>입고</span><span><span class="dot" style="background:var(--teal)"></span>판매</span></div></div>
+      <div style="position:relative;height:200px"><canvas id="c-sm"></canvas></div>
+    </div>
+  </div>
+
+  <!-- P5 재고 -->
+  <div class="page" id="p5">
+    <div class="krow">
+      <div class="kpi"><div class="kpi-l">재고수량</div><div class="kpi-v" id="i-qty" style="color:var(--teal);font-size:18px">—</div><div class="kpi-d">물류제외</div></div>
+      <div class="kpi"><div class="kpi-l">재고금액</div><div class="kpi-v" id="i-amt" style="color:var(--purple);font-size:18px">—</div><div class="kpi-d">현판가</div></div>
+      <div class="kpi"><div class="kpi-l" style="color:var(--red)">마이너스</div><div class="kpi-v" id="i-neg" style="color:var(--red);font-size:22px">—</div><div class="kpi-d" style="color:var(--red)">즉시 확인</div></div>
+      <div class="kpi"><div class="kpi-l">재고 1위</div><div class="kpi-v" id="i-top" style="font-size:13px;color:var(--yellow)">—</div><div class="kpi-d" id="i-top-a">—</div></div>
+    </div>
+    <div class="card"><div class="card-t">지점별 재고금액 TOP 12</div><div id="inv-bars"></div></div>
+    <div class="card">
+      <div class="card-t">마이너스 재고 <span class="pill pr">ALERT</span></div>
+      <div class="tbl-scroll"><table class="tbl"><tr><th>지점</th><th>셀</th><th style="text-align:right">수량</th><th style="text-align:right">금액</th></tr><tbody id="neg-tbl"></tbody></table></div>
+      <div class="warn-box" id="warn-box"></div>
+    </div>
+  </div>
+
+  <!-- P6 픽스 평매출 -->
+  <div class="page" id="p6">
+    <div class="krow">
+      <div class="kpi"><div class="kpi-l">픽스 지점</div><div class="kpi-v" id="fx-cnt" style="color:var(--teal);font-size:22px">—</div><div class="kpi-d">데이터 보유</div></div>
+      <div class="kpi"><div class="kpi-l">평매출 최고</div><div class="kpi-v" id="fx-pm" style="color:var(--yellow);font-size:22px">—</div><div class="kpi-d" id="fx-pm-d">만원/평</div></div>
+      <div class="kpi"><div class="kpi-l">평균 TCR</div><div class="kpi-v" id="fx-tcr" style="color:var(--pink);font-size:22px">—</div><div class="kpi-d">픽스 평균</div></div>
+      <div class="kpi"><div class="kpi-l">평균 매총율</div><div class="kpi-v" id="fx-mg" style="color:var(--purple);font-size:22px">—</div><div class="kpi-d">픽스 평균</div></div>
+    </div>
+    <div class="card">
+      <div class="card-t">평매출 (만원/평)<div class="leg"><span><span class="dot" style="background:var(--teal)"></span>남</span><span><span class="dot" style="background:var(--pink)"></span>여</span><span><span class="dot" style="background:var(--yellow)"></span>아</span></div></div>
+      <div style="position:relative;height:240px"><canvas id="c-fx"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-t">픽스 상세</div>
+      <div class="tbl-scroll"><table class="tbl"><tr><th>지점</th><th>셀</th><th style="text-align:right">평수</th><th style="text-align:right">실적</th><th style="text-align:right">평매출</th><th style="text-align:right">매총율</th></tr><tbody id="fx-tbl"></tbody></table></div>
+    </div>
+  </div>
+
+  </div><!-- /body -->
+</div><!-- /main -->
+
+<!-- 모바일 하단 네비 -->
+<div class="bottom-nav" id="bottom-nav">
+  <button class="bn-item on" onclick="GO('p0',this)" data-page="p0"><div class="bn-icon">📊</div><div class="bn-label">일매출</div></button>
+  <button class="bn-item" onclick="GO('p1',this)" data-page="p1"><div class="bn-icon">🏪</div><div class="bn-label">지점별</div></button>
+  <button class="bn-item" onclick="GO('p2',this)" data-page="p2"><div class="bn-icon">🗂</div><div class="bn-label">유형별</div></button>
+  <button class="bn-item" onclick="GO('p4',this)" data-page="p4"><div class="bn-icon">📦</div><div class="bn-label">입고판매</div></button>
+  <button class="bn-item" onclick="showMoreMenu()" data-page="more"><div class="bn-icon">⋯</div><div class="bn-label">더보기</div></button>
+</div>
+
+<!-- 더보기 메뉴 (모바일) -->
+<div id="more-menu" style="display:none;position:fixed;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom));left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);padding:12px 16px;z-index:99">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+    <button onclick="GO('p3',null);hideMoreMenu()" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 8px;color:var(--text2);font-family:inherit;cursor:pointer;text-align:center">
+      <div style="font-size:18px;margin-bottom:4px">📈</div>
+      <div style="font-size:10px">월별트렌드</div>
+    </button>
+    <button onclick="GO('p5',null);hideMoreMenu()" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 8px;color:var(--text2);font-family:inherit;cursor:pointer;text-align:center">
+      <div style="font-size:18px;margin-bottom:4px">🗃</div>
+      <div style="font-size:10px">재고현황</div>
+    </button>
+    <button onclick="GO('p6',null);hideMoreMenu()" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 8px;color:var(--teal);font-family:inherit;cursor:pointer;text-align:center;border-color:var(--teal)">
+      <div style="font-size:18px;margin-bottom:4px">⭐</div>
+      <div style="font-size:10px">픽스평매출</div>
+    </button>
+  </div>
+</div>
+
+<!-- 상세 패널 -->
+<div class="overlay" id="overlay" onclick="closeDetail(event)">
+  <div class="dp">
+    <div class="dp-hdr">
+      <div><div class="dp-name" id="dp-name">—</div><div class="dp-meta" id="dp-meta">—</div></div>
+      <div class="dp-close" onclick="closePanel()">✕</div>
+    </div>
+    <div class="dp-body">
+      <div class="dp-krow" id="dp-krow"></div>
+      <div class="dp-sec"><div class="dp-sec-title">일별 매출 추이</div><div style="position:relative;height:140px"><canvas id="dp-chart"></canvas></div></div>
+      <div class="dp-sec"><div class="dp-sec-title">셀별 상세</div><div class="tbl-scroll"><table class="dp-tbl"><tr><th>셀</th><th style="text-align:right">실적</th><th style="text-align:right">전년</th><th style="text-align:right">성장</th><th style="text-align:right">판매율</th><th style="text-align:right">매총율</th><th style="text-align:right">평매출</th></tr><tbody id="dp-ctbl"></tbody></table></div></div>
+      <div class="dp-sec"><div class="dp-sec-title">실적 진단</div><div id="dp-diag"></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DATA = {"date":"2026-05-13","monthly_target":4586000000.0,"today_m":{"as_of_date":"2026-05-13","외형매출":1691816146.0,"실매출":1537584152.0,"매출원가":874156680.0,"누적이익":663427472.0,"판매량":70054,"영업일수":13,"점당매출_일평균":10844975.294871794,"누적판매율":0.03217855156202454,"TCR":32.36081553126374,"누적매총율":0.4314739268982788,"Turns":0.02824307086449099,"기말재고량":2480396,"기말재고액":26291661468.0},"daily":[{"d":"05-01","t":242221580.0,"m":114147040.0,"w":74267410.0,"k":53807130.0,"target":167438503.17513797,"ly":109449659.99999999,"rate":144.7,"growth":121.3},{"d":"05-02","t":200192979.0,"m":86821720.0,"w":74100950.0,"k":39270309.0,"target":258091833.83325088,"ly":168707095.0,"rate":77.6,"growth":18.7},{"d":"05-03","t":154782132.0,"m":68985220.0,"w":54063700.0,"k":31733212.0,"target":202896414.20319614,"ly":132627461.0,"rate":76.3,"growth":16.7},{"d":"05-04","t":122023985.0,"m":48619640.0,"w":46093730.0,"k":27310615.0,"target":181119781.3143065,"ly":118392712.00000001,"rate":67.4,"growth":3.1},{"d":"05-05","t":197759302.0,"m":84512930.0,"w":69996990.0,"k":43249382.0,"target":195101984.6295383,"ly":127532470.00000001,"rate":101.4,"growth":55.1},{"d":"05-06","t":70846452.0,"m":26994070.0,"w":33087870.0,"k":10764512.0,"target":118120512.99623528,"ly":77211930.0,"rate":60.0,"growth":-8.2},{"d":"05-07","t":75396837.0,"m":27867590.0,"w":32379370.0,"k":15149877.0,"target":133135747.00823717,"ly":87026950.0,"rate":56.6,"growth":-13.4},{"d":"05-08","t":106729093.0,"m":44018350.0,"w":44875790.0,"k":17834953.0,"target":103583486.05867763,"ly":67709500.0,"rate":103.0,"growth":57.6},{"d":"05-09","t":162734230.0,"m":74754258.0,"w":61812310.0,"k":26167662.0,"target":162028792.338459,"ly":105913489.99999999,"rate":100.4,"growth":53.6},{"d":"05-10","t":133358892.0,"m":61550830.0,"w":47263100.0,"k":24544962.0,"target":170546078.1287126,"ly":111480991.0,"rate":78.2,"growth":19.6},{"d":"05-11","t":55505456.0,"m":20263590.0,"w":27172310.0,"k":8069556.0,"target":93707673.9236541,"ly":61253970.0,"rate":59.2,"growth":-9.4},{"d":"05-12","t":74267978.0,"m":25864260.0,"w":32579440.0,"k":15824278.0,"target":106192083.54384232,"ly":69414664.0,"rate":69.9,"growth":7.0},{"d":"05-13","t":95997230.0,"m":33031150.0,"w":43735490.0,"k":19230590.0,"target":137714429.74698862,"ly":90019901.1999999,"rate":69.7,"growth":6.6}],"branch":[{"name":"강서점","type":"픽스","total":249243934.0,"net":226513374.0,"qty":7960,"sell_rate":11.0,"tcr":1787.3,"margin":19.8,"week_rate":3.31},{"name":"송파점","type":"픽스","total":189444548.0,"net":172197304.0,"qty":9443,"sell_rate":4.0,"tcr":1358.5,"margin":54.1,"week_rate":1.2},{"name":"분당점","type":"픽스","total":154953796.0,"net":140834162.0,"qty":5172,"sell_rate":3.4,"tcr":6108.2,"margin":52.3,"week_rate":1.03},{"name":"광명점","type":"기타","total":146310873.0,"net":132986488.0,"qty":5567,"sell_rate":4.8,"tcr":0,"margin":37.3,"week_rate":1.44},{"name":"천호2점","type":"픽스","total":139355401.0,"net":126682722.0,"qty":6019,"sell_rate":6.1,"tcr":78223.8,"margin":55.8,"week_rate":1.84},{"name":"강남점","type":"픽스","total":127388756.0,"net":115745074.0,"qty":2805,"sell_rate":8.6,"tcr":63867.1,"margin":1.4,"week_rate":2.57},{"name":"평촌2점","type":"픽스","total":76924856.0,"net":69923967.0,"qty":3071,"sell_rate":6.8,"tcr":5850.0,"margin":64.6,"week_rate":2.03},{"name":"동수원","type":"픽스","total":59677640.0,"net":54249153.0,"qty":3037,"sell_rate":5.1,"tcr":0,"margin":47.3,"week_rate":1.53},{"name":"수원터미널점","type":"픽스","total":59458800.0,"net":54041149.0,"qty":3253,"sell_rate":3.9,"tcr":7760.3,"margin":54.4,"week_rate":1.16},{"name":"NC대전 유성점","type":"픽스 키즈","total":51732431.0,"net":47022530.0,"qty":2465,"sell_rate":2.9,"tcr":0,"margin":49.5,"week_rate":0.88},{"name":"산본점","type":"픽스","total":50552332.0,"net":45946720.0,"qty":1963,"sell_rate":5.6,"tcr":0,"margin":49.1,"week_rate":1.68},{"name":"불광점","type":"픽스","total":50150738.0,"net":45584418.0,"qty":2419,"sell_rate":5.0,"tcr":2813.9,"margin":51.9,"week_rate":1.5},{"name":"신구로점","type":"픽스","total":48668612.0,"net":44236296.0,"qty":2089,"sell_rate":4.2,"tcr":35282.3,"margin":64.9,"week_rate":1.27},{"name":"중계점","type":"중간관리","total":46468412.0,"net":42227224.0,"qty":2233,"sell_rate":5.6,"tcr":3670.2,"margin":57.7,"week_rate":1.69},{"name":"순천점","type":"픽스","total":40882891.0,"net":37112965.0,"qty":2575,"sell_rate":6.4,"tcr":0,"margin":46.8,"week_rate":1.92},{"name":"중앙로역점","type":"중간관리","total":38428998.0,"net":34920748.0,"qty":1254,"sell_rate":4.9,"tcr":0,"margin":47.8,"week_rate":1.47},{"name":"수성점","type":"기타","total":34390827.0,"net":31227232.0,"qty":1444,"sell_rate":4.0,"tcr":348.1,"margin":38.9,"week_rate":1.2},{"name":"엑스코점","type":"픽스 키즈","total":26397395.0,"net":23998565.0,"qty":1160,"sell_rate":2.1,"tcr":25171.3,"margin":49.6,"week_rate":0.64},{"name":"쇼핑점","type":"픽스 키즈","total":24379585.0,"net":22154687.0,"qty":1578,"sell_rate":2.7,"tcr":9135.2,"margin":56.7,"week_rate":0.8},{"name":"부천점","type":"픽스 키즈","total":20775060.0,"net":18884577.0,"qty":1400,"sell_rate":2.9,"tcr":956.2,"margin":49.5,"week_rate":0.88},{"name":"일산점","type":"기타","total":20411161.0,"net":18554692.0,"qty":958,"sell_rate":4.1,"tcr":0,"margin":54.3,"week_rate":1.23},{"name":"창원점","type":"기타","total":13970864.0,"net":12697711.0,"qty":1044,"sell_rate":2.9,"tcr":2125.0,"margin":59.2,"week_rate":0.86},{"name":"울산2점","type":"기타","total":13627212.0,"net":12372164.0,"qty":696,"sell_rate":3.8,"tcr":0,"margin":45.3,"week_rate":1.13},{"name":"부산대점","type":"기타","total":8221024.0,"net":7470230.0,"qty":449,"sell_rate":2.8,"tcr":1636.6,"margin":53.7,"week_rate":0.83},{"name":"물류 센타","type":"기타","total":0.0,"net":0.0,"qty":0,"sell_rate":0.0,"tcr":0,"margin":0,"week_rate":0.0}],"cell":{"남성":{"total":717430648.0,"net":652211340.0,"qty":22906,"sell_rate":3.6,"tcr":0,"margin":47.9,"week_sell":215229194.4,"prev_sell":502201453.59999996},"아동":{"total":332957038.0,"net":302254523.0,"qty":20742,"sell_rate":2.4,"tcr":1363.7,"margin":50.4,"week_sell":99887111.39999999,"prev_sell":233069926.6},"여성":{"total":641428460.0,"net":583118289.0,"qty":26406,"sell_rate":3.4,"tcr":2300.3,"margin":34.1,"week_sell":192428538.0,"prev_sell":448999922.0}},"type":{"기타":{"남성":{"total":101575590.0,"sell_rate":100.0,"margin":40.6,"tcr":168.2},"아동":{"total":75748211.0,"sell_rate":100.0,"margin":38.0,"tcr":161.3},"여성":{"total":59608160.0,"sell_rate":100.0,"margin":46.6,"tcr":187.1}},"중간관리":{"남성":{"total":49975108.0,"sell_rate":100.0,"margin":52.8,"tcr":212.0},"아동":{"total":9861802.0,"sell_rate":100.0,"margin":54.2,"tcr":218.2},"여성":{"total":25060500.0,"sell_rate":100.0,"margin":53.6,"tcr":215.7}},"픽스":{"남성":{"total":1230615630.0,"sell_rate":100.0,"margin":50.0,"tcr":199.8},"아동":{"total":410757046.0,"sell_rate":100.0,"margin":55.4,"tcr":224.1},"여성":{"total":1139948990.0,"sell_rate":100.0,"margin":32.2,"tcr":147.6}},"픽스 키즈":{"남성":{"total":48638800.0,"sell_rate":100.0,"margin":45.4,"tcr":183.1},"아동":{"total":147568142.0,"sell_rate":100.0,"margin":54.2,"tcr":218.2},"여성":{"total":50362000.0,"sell_rate":100.0,"margin":46.9,"tcr":188.5}}},"trend":[{"ym":"2025-01","sales":2673586696.0,"margin":-6.0,"sell_rate":13.5,"stock":16467511022.0},{"ym":"2025-02","sales":2516051726.0,"margin":-10.6,"sell_rate":13.8,"stock":15946993009.0},{"ym":"2025-03","sales":3092702399.0,"margin":16.9,"sell_rate":13.5,"stock":15026491411.0},{"ym":"2025-04","sales":2967348783.0,"margin":19.4,"sell_rate":13.7,"stock":13694351280.0},{"ym":"2025-05","sales":2997734280.0,"margin":24.5,"sell_rate":13.8,"stock":12842380976.0},{"ym":"2025-06","sales":2568373676.0,"margin":24.5,"sell_rate":11.6,"stock":13471034379.0},{"ym":"2025-07","sales":2412724058.0,"margin":21.3,"sell_rate":11.0,"stock":13918229218.0},{"ym":"2025-08","sales":2709909652.0,"margin":-13.6,"sell_rate":18.5,"stock":12461557291.0},{"ym":"2025-09","sales":2820982288.0,"margin":24.4,"sell_rate":14.6,"stock":11346007861.0},{"ym":"2025-10","sales":3625414132.0,"margin":28.3,"sell_rate":20.0,"stock":9451728307.0},{"ym":"2025-11","sales":3191352438.0,"margin":31.3,"sell_rate":18.5,"stock":8769493893.0},{"ym":"2025-12","sales":2539193540.0,"margin":18.8,"sell_rate":16.4,"stock":9546312491.0},{"ym":"2026-01","sales":1825882774.0,"margin":7.4,"sell_rate":100.0,"stock":0},{"ym":"2026-02","sales":2163147288.0,"margin":26.1,"sell_rate":100.0,"stock":0},{"ym":"2026-03","sales":2999461800.0,"margin":22.9,"sell_rate":100.0,"stock":0},{"ym":"2026-04","sales":3901179230.0,"margin":32.9,"sell_rate":100.0,"stock":0},{"ym":"2026-05","sales":1691816146.0,"margin":43.1,"sell_rate":6.2,"stock":13193931234.0}],"inv":[{"name":"물류 센타","cell":"여성","qty":574008,"amt":4927748940.0,"neg_q":-17088,"neg_a":-178569150.0},{"name":"물류 센타","cell":"남성","qty":343949,"amt":4128748788.0,"neg_q":-6159,"neg_a":-55354212.0},{"name":"물류 센타","cell":"아동","qty":306043,"amt":1478404838.0,"neg_q":-16166,"neg_a":-28988514.0},{"name":"분당점","cell":"아동","qty":99587,"amt":992161906.0,"neg_q":-50,"neg_a":-859122.0},{"name":"광명점","cell":"남성","qty":45065,"amt":987856076.0,"neg_q":-1166,"neg_a":-12882708.0},{"name":"강서점","cell":"여성","qty":33299,"amt":751073761.0,"neg_q":-339,"neg_a":-14182426.0},{"name":"강남점","cell":"여성","qty":18548,"amt":750016923.0,"neg_q":-32,"neg_a":-3427108.0},{"name":"송파점","cell":"아동","qty":107559,"amt":745688709.0,"neg_q":-4048,"neg_a":-3047756.0},{"name":"송파점","cell":"여성","qty":33043,"amt":689758872.0,"neg_q":-4,"neg_a":-84054.0},{"name":"강서점","cell":"남성","qty":30864,"amt":669070579.0,"neg_q":-377,"neg_a":-10782008.0},{"name":"분당점","cell":"여성","qty":25580,"amt":596671108.0,"neg_q":-110,"neg_a":-1239434.0},{"name":"광명점","cell":"여성","qty":49903,"amt":518209063.0,"neg_q":-5,"neg_a":-40216.0},{"name":"송파점","cell":"남성","qty":20766,"amt":466259812.0,"neg_q":-4,"neg_a":-112400.0},{"name":"천호2점","cell":"여성","qty":29532,"amt":386983336.0,"neg_q":-17,"neg_a":-293221.0},{"name":"쇼핑점","cell":"아동","qty":47647,"amt":350253382.0,"neg_q":-1,"neg_a":-19473.0},{"name":"수성점","cell":"여성","qty":24499,"amt":335393084.0,"neg_q":-13,"neg_a":-204813.0},{"name":"NC대전 유성점","cell":"남성","qty":16927,"amt":320753221.0,"neg_q":0,"neg_a":0.0},{"name":"부천점","cell":"아동","qty":31095,"amt":310957345.0,"neg_q":0,"neg_a":0.0},{"name":"분당점","cell":"남성","qty":19136,"amt":301348004.0,"neg_q":-12,"neg_a":-608796.0},{"name":"강남점","cell":"남성","qty":13955,"amt":270082349.0,"neg_q":-98,"neg_a":-3465356.0},{"name":"천호2점","cell":"남성","qty":16942,"amt":269593126.0,"neg_q":-45,"neg_a":-1157126.0},{"name":"동수원","cell":"여성","qty":24430,"amt":259395632.0,"neg_q":-9,"neg_a":-57507.0},{"name":"동수원","cell":"남성","qty":18097,"amt":249271140.0,"neg_q":-13,"neg_a":-690664.0},{"name":"NC대전 유성점","cell":"여성","qty":16547,"amt":247856812.0,"neg_q":-16,"neg_a":-3322222.0},{"name":"엑스코점","cell":"여성","qty":14026,"amt":241470724.0,"neg_q":-6,"neg_a":-166382.0},{"name":"수원터미널점","cell":"여성","qty":22906,"amt":241311292.0,"neg_q":-29,"neg_a":-270218.0},{"name":"중앙로역점","cell":"남성","qty":18152,"amt":228449935.0,"neg_q":-8,"neg_a":-138192.0},{"name":"평촌2점","cell":"아동","qty":30743,"amt":222122869.0,"neg_q":0,"neg_a":0.0},{"name":"NC대전 유성점","cell":"아동","qty":24340,"amt":220463051.0,"neg_q":0,"neg_a":0.0},{"name":"불광점","cell":"여성","qty":21369,"amt":207938731.0,"neg_q":-3,"neg_a":-24776.0},{"name":"순천점","cell":"여성","qty":19537,"amt":205126723.0,"neg_q":-16,"neg_a":-109492.0},{"name":"엑스코점","cell":"아동","qty":29289,"amt":203014029.0,"neg_q":-6,"neg_a":-27702.0},{"name":"일산점","cell":"아동","qty":25756,"amt":199022718.0,"neg_q":-4,"neg_a":-21931.0},{"name":"천호2점","cell":"아동","qty":28276,"amt":198292158.0,"neg_q":-2,"neg_a":-26232.0},{"name":"강남점","cell":"아동","qty":14164,"amt":196355918.0,"neg_q":-6,"neg_a":-292742.0},{"name":"수원터미널점","cell":"아동","qty":27311,"amt":195365096.0,"neg_q":-3,"neg_a":-10233.0},{"name":"산본점","cell":"여성","qty":16309,"amt":188878075.0,"neg_q":-18,"neg_a":-126326.0},{"name":"신구로점","cell":"아동","qty":22329,"amt":177743320.0,"neg_q":0,"neg_a":0.0},{"name":"불광점","cell":"남성","qty":13511,"amt":177507534.0,"neg_q":-6,"neg_a":-97524.0},{"name":"창원점","cell":"아동","qty":23973,"amt":174873751.0,"neg_q":0,"neg_a":0.0},{"name":"수원터미널점","cell":"남성","qty":12718,"amt":174404361.0,"neg_q":-27,"neg_a":-916589.0},{"name":"산본점","cell":"남성","qty":10743,"amt":167731453.0,"neg_q":-2,"neg_a":-17528.0},{"name":"광명점","cell":"아동","qty":12758,"amt":147688754.0,"neg_q":-12,"neg_a":-371312.0},{"name":"중계점","cell":"아동","qty":19080,"amt":137449887.0,"neg_q":-8,"neg_a":-90680.0},{"name":"부산대점","cell":"아동","qty":13561,"amt":121817136.0,"neg_q":-54,"neg_a":-281560.0},{"name":"중앙로역점","cell":"여성","qty":8217,"amt":121342732.0,"neg_q":0,"neg_a":0.0},{"name":"수성점","cell":"남성","qty":5051,"amt":121104194.0,"neg_q":0,"neg_a":0.0},{"name":"평촌2점","cell":"여성","qty":14104,"amt":113609895.0,"neg_q":-30,"neg_a":-266726.0},{"name":"엑스코점","cell":"남성","qty":5002,"amt":109736886.0,"neg_q":-2,"neg_a":-32836.0},{"name":"신구로점","cell":"남성","qty":8317,"amt":91559989.0,"neg_q":0,"neg_a":0.0},{"name":"중계점","cell":"남성","qty":8298,"amt":89134624.0,"neg_q":-2,"neg_a":-27704.0},{"name":"울산2점","cell":"여성","qty":6799,"amt":88254653.0,"neg_q":-16,"neg_a":-80922.0},{"name":"신구로점","cell":"여성","qty":8088,"amt":82112613.0,"neg_q":-2,"neg_a":-10036.0},{"name":"순천점","cell":"남성","qty":4289,"amt":79434700.0,"neg_q":-8,"neg_a":-133208.0},{"name":"울산2점","cell":"남성","qty":5719,"amt":79216268.0,"neg_q":-2,"neg_a":-49828.0},{"name":"중계점","cell":"여성","qty":8117,"amt":73038444.0,"neg_q":0,"neg_a":0.0},{"name":"강서점","cell":"아동","qty":8054,"amt":47422453.0,"neg_q":-50,"neg_a":-847434.0},{"name":"산본점","cell":"아동","qty":8463,"amt":37817440.0,"neg_q":-2,"neg_a":-48764.0},{"name":"불광점","cell":"아동","qty":6999,"amt":30190207.0,"neg_q":0,"neg_a":0.0},{"name":"동수원","cell":"아동","qty":4012,"amt":22343111.0,"neg_q":0,"neg_a":0.0},{"name":"아난티 남해지점","cell":"남성","qty":108,"amt":18512424.0,"neg_q":0,"neg_a":0.0},{"name":"설악비치점","cell":"남성","qty":42,"amt":15431248.0,"neg_q":0,"neg_a":0.0},{"name":"설악비치점","cell":"여성","qty":22,"amt":11852742.0,"neg_q":0,"neg_a":0.0},{"name":"울산2점","cell":"아동","qty":816,"amt":5420660.0,"neg_q":-10,"neg_a":-18610.0},{"name":"평촌2점","cell":"남성","qty":654,"amt":4937525.0,"neg_q":-2,"neg_a":-17548.0},{"name":"순천점","cell":"아동","qty":491,"amt":4763996.0,"neg_q":0,"neg_a":0.0},{"name":"아난티 남해지점","cell":"여성","qty":62,"amt":4618278.0,"neg_q":0,"neg_a":0.0},{"name":"중앙로역점","cell":"아동","qty":448,"amt":4407346.0,"neg_q":0,"neg_a":0.0},{"name":"부천점","cell":"여성","qty":314,"amt":3459274.0,"neg_q":0,"neg_a":0.0},{"name":"아난티 코브","cell":"남성","qty":10,"amt":1011994.0,"neg_q":0,"neg_a":0.0},{"name":"아난티 코브","cell":"여성","qty":4,"amt":339916.0,"neg_q":0,"neg_a":0.0},{"name":"수성점","cell":"아동","qty":24,"amt":252507.0,"neg_q":-2,"neg_a":-39403.0},{"name":"서귀포점","cell":"여성","qty":2,"amt":14554.0,"neg_q":-4,"neg_a":-33456.0}],"sm":[{"d":"05-01","iq":0,"sq":78},{"d":"05-02","iq":0,"sq":119},{"d":"05-03","iq":0,"sq":107},{"d":"05-04","iq":2,"sq":101},{"d":"05-05","iq":0,"sq":95},{"d":"05-06","iq":1,"sq":118},{"d":"05-07","iq":0,"sq":86},{"d":"05-08","iq":0,"sq":77},{"d":"05-09","iq":266,"sq":7119},{"d":"05-10","iq":0,"sq":6333},{"d":"05-11","iq":350,"sq":2612},{"d":"05-12","iq":317,"sq":3470},{"d":"05-13","iq":727,"sq":4909}],"fix":[{"name":"강서점","cell":"남성","total":138332610.0,"pm":135.6,"area":102.0,"tcr":134.3,"margin":25.6},{"name":"강서점","cell":"여성","total":104134250.0,"pm":115.7,"area":90.0,"tcr":113.3,"margin":11.7},{"name":"송파점","cell":"남성","total":90121010.0,"pm":125.2,"area":72.0,"tcr":230.2,"margin":56.6},{"name":"강남점","cell":"여성","total":78558200.0,"pm":238.1,"area":33.0,"tcr":80.7,"margin":-23.9},{"name":"천호2점","cell":"남성","total":70648400.0,"pm":126.2,"area":56.0,"tcr":238.2,"margin":58.0},{"name":"분당점","cell":"여성","total":59610030.0,"pm":106.4,"area":56.0,"tcr":172.0,"margin":41.9},{"name":"분당점","cell":"남성","total":57219090.0,"pm":260.1,"area":22.0,"tcr":285.6,"margin":65.0},{"name":"송파점","cell":"여성","total":56070490.0,"pm":100.1,"area":56.0,"tcr":174.7,"margin":42.7},{"name":"천호2점","cell":"여성","total":47101200.0,"pm":72.5,"area":65.0,"tcr":208.3,"margin":52.0},{"name":"송파점","cell":"아동","total":43253048.0,"pm":1081.3,"area":4.0,"tcr":276.1,"margin":63.8},{"name":"강남점","cell":"남성","total":40486990.0,"pm":126.5,"area":32.0,"tcr":171.0,"margin":41.5},{"name":"분당점","cell":"아동","total":38124676.0,"pm":3812.5,"area":1.0,"tcr":197.9,"margin":49.5},{"name":"동수원","cell":"남성","total":29810300.0,"pm":72.7,"area":41.0,"tcr":223.1,"margin":55.2},{"name":"불광점","cell":"남성","total":28684400.0,"pm":79.7,"area":36.0,"tcr":221.5,"margin":54.9},{"name":"동수원","cell":"여성","total":28120450.0,"pm":90.7,"area":31.0,"tcr":166.3,"margin":39.9},{"name":"산본점","cell":"여성","total":27191800.0,"pm":151.1,"area":18.0,"tcr":198.9,"margin":49.7},{"name":"순천점","cell":"여성","total":26380300.0,"pm":26.4,"area":100.0,"tcr":180.7,"margin":44.6},{"name":"신구로점","cell":"남성","total":25501800.0,"pm":212.5,"area":12.0,"tcr":366.7,"margin":72.7},{"name":"중계점","cell":"남성","total":23327708.0,"pm":0.0,"area":null,"tcr":239.4,"margin":58.2},{"name":"산본점","cell":"남성","total":22081600.0,"pm":129.9,"area":17.0,"tcr":196.0,"margin":49.0},{"name":"수원터미널점","cell":"아동","total":21931670.0,"pm":168.7,"area":13.0,"tcr":242.3,"margin":58.7},{"name":"천호2점","cell":"아동","total":21605801.0,"pm":1080.3,"area":2.0,"tcr":233.5,"margin":57.2},{"name":"수원터미널점","cell":"남성","total":21112170.0,"pm":50.3,"area":42.0,"tcr":236.0,"margin":57.6},{"name":"불광점","cell":"여성","total":17441730.0,"pm":102.6,"area":17.0,"tcr":212.3,"margin":52.9},{"name":"신구로점","cell":"여성","total":17273600.0,"pm":143.9,"area":12.0,"tcr":222.3,"margin":55.0},{"name":"수원터미널점","cell":"여성","total":16414960.0,"pm":46.9,"area":35.0,"tcr":179.6,"margin":44.3},{"name":"중계점","cell":"여성","total":14102100.0,"pm":0.0,"area":null,"tcr":241.7,"margin":58.6},{"name":"순천점","cell":"남성","total":13274880.0,"pm":26.5,"area":50.0,"tcr":220.0,"margin":54.5},{"name":"중계점","cell":"아동","total":9038604.0,"pm":0.0,"area":null,"tcr":222.7,"margin":55.1},{"name":"강남점","cell":"아동","total":8343566.0,"pm":0.0,"area":null,"tcr":182.9,"margin":45.3},{"name":"강서점","cell":"아동","total":6777074.0,"pm":75.3,"area":9.0,"tcr":133.2,"margin":24.9},{"name":"신구로점","cell":"아동","total":5893212.0,"pm":0.0,"area":null,"tcr":251.6,"margin":60.3},{"name":"불광점","cell":"아동","total":4024608.0,"pm":57.5,"area":7.0,"tcr":135.4,"margin":26.2},{"name":"동수원","cell":"아동","total":1746890.0,"pm":34.9,"area":5.0,"tcr":151.0,"margin":33.8},{"name":"산본점","cell":"아동","total":1278932.0,"pm":9.8,"area":13.0,"tcr":160.9,"margin":37.9},{"name":"순천점","cell":"아동","total":1227711.0,"pm":0.0,"area":null,"tcr":107.6,"margin":7.1}],"ym":"2026-05","tot_sales":1691816146,"tot_ly":1326740794,"tot_tgt":2029677320,"branches":[{"name":"강서점","type":"픽스","total":249243934,"net":226513374,"qty":2653},{"name":"송파점","type":"픽스","total":189444548,"net":172197304,"qty":3147},{"name":"분당점","type":"픽스","total":154953796,"net":140834162,"qty":1724},{"name":"광명점","type":"기타","total":146310873,"net":132986488,"qty":1855},{"name":"천호2점","type":"픽스","total":139355401,"net":126682722,"qty":2006},{"name":"강남점","type":"픽스","total":127388756,"net":115745074,"qty":935},{"name":"평촌2점","type":"픽스","total":76924856,"net":69923967,"qty":1023},{"name":"동수원","type":"픽스","total":59677640,"net":54249153,"qty":1012},{"name":"수원터미널점","type":"픽스","total":59458800,"net":54041149,"qty":1084},{"name":"NC대전 유성점","type":"픽스 키즈","total":51732431,"net":47022530,"qty":821},{"name":"산본점","type":"픽스","total":50552332,"net":45946720,"qty":654},{"name":"불광점","type":"픽스","total":50150738,"net":45584418,"qty":806},{"name":"신구로점","type":"픽스","total":48668612,"net":44236296,"qty":696},{"name":"중계점","type":"중간관리","total":46468412,"net":42227224,"qty":744},{"name":"순천점","type":"픽스","total":40882891,"net":37112965,"qty":858},{"name":"중앙로역점","type":"중간관리","total":38428998,"net":34920748,"qty":418},{"name":"수성점","type":"기타","total":34390827,"net":31227232,"qty":481},{"name":"엑스코점","type":"픽스 키즈","total":26397395,"net":23998565,"qty":386},{"name":"쇼핑점","type":"픽스 키즈","total":24379585,"net":22154687,"qty":526},{"name":"부천점","type":"픽스 키즈","total":20775060,"net":18884577,"qty":466},{"name":"일산점","type":"기타","total":20411161,"net":18554692,"qty":319},{"name":"창원점","type":"기타","total":13970864,"net":12697711,"qty":348},{"name":"울산2점","type":"기타","total":13627212,"net":12372164,"qty":232},{"name":"부산대점","type":"기타","total":8221024,"net":7470230,"qty":149},{"name":"물류 센타","type":"기타","total":0,"net":0,"qty":0}],"cell_by_branch":{"NC대전 유성점":[{"cell":"남성","total":17591300.0,"net":15992119.0,"cost":8818948.0,"qty":806,"area":null,"inv_qty":16927,"inv_amt":320753221.0,"sell_rate":2.7,"margin":44.9,"pm":null,"ly":30490062.0,"growth":-42.3},{"cell":"아동","total":19641531.0,"net":17848898.0,"cost":7984075.0,"qty":940,"area":null,"inv_qty":24340,"inv_amt":220463051.0,"sell_rate":3.5,"margin":55.3,"pm":null,"ly":20575362.0,"growth":-4.5},{"cell":"여성","total":14499600.0,"net":13181513.0,"cost":6950281.0,"qty":719,"area":null,"inv_qty":16547,"inv_amt":247856812.0,"sell_rate":2.7,"margin":47.3,"pm":null,"ly":25843364.0,"growth":-43.9}],"강남점":[{"cell":"남성","total":40486990.0,"net":36806463.0,"cost":21528767.0,"qty":1104,"area":32.0,"inv_qty":13955,"inv_amt":270082349.0,"sell_rate":7.4,"margin":41.5,"pm":126.5,"ly":44775470.0,"growth":-9.6},{"cell":"아동","total":8343566.0,"net":7522014.0,"cost":4112612.0,"qty":317,"area":null,"inv_qty":14164,"inv_amt":196355918.0,"sell_rate":2.1,"margin":45.3,"pm":null,"ly":152596820.0,"growth":-94.5},{"cell":"여성","total":78558200.0,"net":71416597.0,"cost":88501944.0,"qty":1384,"area":33.0,"inv_qty":18548,"inv_amt":750016923.0,"sell_rate":10.6,"margin":-23.9,"pm":238.1,"ly":158628015.0,"growth":-50.5}],"강서점":[{"cell":"남성","total":138332610.0,"net":125757173.0,"cost":93612109.0,"qty":3960,"area":102.0,"inv_qty":30864,"inv_amt":669070579.0,"sell_rate":12.3,"margin":25.6,"pm":135.6,"ly":94158328.0,"growth":46.9},{"cell":"아동","total":6777074.0,"net":6088526.0,"cost":4571900.0,"qty":850,"area":9.0,"inv_qty":8054,"inv_amt":47422453.0,"sell_rate":8.8,"margin":24.9,"pm":75.3,"ly":88204112.0,"growth":-92.3},{"cell":"여성","total":104134250.0,"net":94667675.0,"cost":83582038.0,"qty":3150,"area":90.0,"inv_qty":33299,"inv_amt":751073761.0,"sell_rate":10.0,"margin":11.7,"pm":115.7,"ly":141768364.0,"growth":-26.5}],"광명점":[{"cell":"남성","total":88890470.0,"net":80809629.0,"cost":47897528.0,"qty":2593,"area":null,"inv_qty":45065,"inv_amt":987856076.0,"sell_rate":4.6,"margin":40.7,"pm":null,"ly":145637547.0,"growth":-39.0},{"cell":"아동","total":24619503.0,"net":22357753.0,"cost":20223960.0,"qty":990,"area":null,"inv_qty":12758,"inv_amt":147688754.0,"sell_rate":12.0,"margin":9.5,"pm":null,"ly":65216724.0,"growth":-62.2},{"cell":"여성","total":32800900.0,"net":29819106.0,"cost":15205566.0,"qty":1984,"area":null,"inv_qty":49903,"inv_amt":518209063.0,"sell_rate":2.9,"margin":49.0,"pm":null,"ly":107357828.0,"growth":-69.4}],"동수원":[{"cell":"남성","total":29810300.0,"net":27100368.0,"cost":12148456.0,"qty":1138,"area":41.0,"inv_qty":18097,"inv_amt":249271140.0,"sell_rate":4.6,"margin":55.2,"pm":72.7,"ly":26427680.0,"growth":12.8},{"cell":"아동","total":1746890.0,"net":1584648.0,"cost":1049464.0,"qty":91,"area":5.0,"inv_qty":4012,"inv_amt":22343111.0,"sell_rate":4.5,"margin":33.8,"pm":34.9,"ly":14531340.0,"growth":-88.0},{"cell":"여성","total":28120450.0,"net":25564137.0,"cost":15374878.0,"qty":1808,"area":31.0,"inv_qty":24430,"inv_amt":259395632.0,"sell_rate":5.6,"margin":39.9,"pm":90.7,"ly":26788970.0,"growth":5.0}],"물류 센타":[{"cell":"아동","total":0.0,"net":0.0,"cost":-72.0,"qty":0,"area":null,"inv_qty":306043,"inv_amt":1478404838.0,"sell_rate":-0.0,"margin":0,"pm":null,"ly":0.0,"growth":null},{"cell":"여성","total":0.0,"net":0.0,"cost":209476.0,"qty":0,"area":null,"inv_qty":574008,"inv_amt":4927748940.0,"sell_rate":0.0,"margin":0,"pm":null,"ly":0.0,"growth":null}],"부산대점":[{"cell":"아동","total":8221024.0,"net":7470230.0,"cost":3460199.0,"qty":449,"area":null,"inv_qty":13561,"inv_amt":121817136.0,"sell_rate":2.8,"margin":53.7,"pm":null,"ly":0,"growth":null}],"부천점":[{"cell":"아동","total":20775060.0,"net":18884577.0,"cost":9532628.0,"qty":1400,"area":null,"inv_qty":31095,"inv_amt":310957345.0,"sell_rate":3.0,"margin":49.5,"pm":null,"ly":82522140.0,"growth":-74.8}],"분당점":[{"cell":"남성","total":57219090.0,"net":52017545.0,"cost":18213021.0,"qty":1532,"area":22.0,"inv_qty":19136,"inv_amt":301348004.0,"sell_rate":5.7,"margin":65.0,"pm":260.1,"ly":24703410.0,"growth":131.6},{"cell":"아동","total":38124676.0,"net":34625526.0,"cost":17499540.0,"qty":1975,"area":1.0,"inv_qty":99587,"inv_amt":992161906.0,"sell_rate":1.7,"margin":49.5,"pm":3812.5,"ly":82716620.0,"growth":-53.9},{"cell":"여성","total":59610030.0,"net":54191091.0,"cost":31509908.0,"qty":1665,"area":56.0,"inv_qty":25580,"inv_amt":596671108.0,"sell_rate":5.0,"margin":41.9,"pm":106.4,"ly":69243820.0,"growth":-13.9}],"불광점":[{"cell":"남성","total":28684400.0,"net":26076800.0,"cost":11772376.0,"qty":1127,"area":36.0,"inv_qty":13511,"inv_amt":177507534.0,"sell_rate":6.2,"margin":54.9,"pm":79.7,"ly":20444100.0,"growth":40.3},{"cell":"아동","total":4024608.0,"net":3651436.0,"cost":2696306.0,"qty":284,"area":7.0,"inv_qty":6999,"inv_amt":30190207.0,"sell_rate":8.2,"margin":26.2,"pm":57.5,"ly":11525270.0,"growth":-65.1},{"cell":"여성","total":17441730.0,"net":15856182.0,"cost":7468860.0,"qty":1008,"area":17.0,"inv_qty":21369,"inv_amt":207938731.0,"sell_rate":3.5,"margin":52.9,"pm":102.6,"ly":22238952.0,"growth":-21.6}],"산본점":[{"cell":"남성","total":22081600.0,"net":20074278.0,"cost":10240535.0,"qty":720,"area":17.0,"inv_qty":10743,"inv_amt":167731453.0,"sell_rate":5.8,"margin":49.0,"pm":129.9,"ly":18763990.0,"growth":17.7},{"cell":"아동","total":1278932.0,"net":1152531.0,"cost":716138.0,"qty":101,"area":13.0,"inv_qty":8463,"inv_amt":37817440.0,"sell_rate":1.9,"margin":37.9,"pm":9.8,"ly":28939900.0,"growth":-95.6},{"cell":"여성","total":27191800.0,"net":24719911.0,"cost":12427159.0,"qty":1142,"area":18.0,"inv_qty":16309,"inv_amt":188878075.0,"sell_rate":6.2,"margin":49.7,"pm":151.1,"ly":35340100.0,"growth":-23.1}],"송파점":[{"cell":"남성","total":90121010.0,"net":81928361.0,"cost":35586175.0,"qty":2811,"area":72.0,"inv_qty":20766,"inv_amt":466259812.0,"sell_rate":7.1,"margin":56.6,"pm":125.2,"ly":106912324.0,"growth":-15.7},{"cell":"아동","total":43253048.0,"net":39295647.0,"cost":14231230.0,"qty":4396,"area":4.0,"inv_qty":107559,"inv_amt":745688709.0,"sell_rate":1.9,"margin":63.8,"pm":1081.3,"ly":127842280.0,"growth":-66.2},{"cell":"여성","total":56070490.0,"net":50973296.0,"cost":29183974.0,"qty":2236,"area":56.0,"inv_qty":33043,"inv_amt":689758872.0,"sell_rate":4.1,"margin":42.7,"pm":100.1,"ly":131191636.0,"growth":-57.3}],"쇼핑점":[{"cell":"아동","total":24379585.0,"net":22154687.0,"cost":9591739.0,"qty":1578,"area":null,"inv_qty":47647,"inv_amt":350253382.0,"sell_rate":2.7,"margin":56.7,"pm":null,"ly":36011580.0,"growth":-32.3}],"수성점":[{"cell":"남성","total":7422300.0,"net":6747583.0,"cost":4233905.0,"qty":196,"area":null,"inv_qty":5051,"inv_amt":121104194.0,"sell_rate":3.4,"margin":37.3,"pm":null,"ly":2257710.0,"growth":228.8},{"cell":"아동","total":8559727.0,"net":7744316.0,"cost":5246365.0,"qty":164,"area":null,"inv_qty":24,"inv_amt":252507.0,"sell_rate":95.4,"margin":32.3,"pm":null,"ly":1377460.0,"growth":521.4},{"cell":"여성","total":18408800.0,"net":16735333.0,"cost":9596327.0,"qty":1084,"area":null,"inv_qty":24499,"inv_amt":335393084.0,"sell_rate":2.8,"margin":42.7,"pm":null,"ly":27242400.0,"growth":-32.4}],"수원터미널점":[{"cell":"남성","total":21112170.0,"net":19192917.0,"cost":8131986.0,"qty":847,"area":42.0,"inv_qty":12718,"inv_amt":174404361.0,"sell_rate":4.5,"margin":57.6,"pm":50.3,"ly":16126510.0,"growth":30.9},{"cell":"아동","total":21931670.0,"net":19925470.0,"cost":8224430.0,"qty":1436,"area":13.0,"inv_qty":27311,"inv_amt":195365096.0,"sell_rate":4.0,"margin":58.7,"pm":168.7,"ly":8681830.0,"growth":152.6},{"cell":"여성","total":16414960.0,"net":14922762.0,"cost":8311081.0,"qty":970,"area":35.0,"inv_qty":22906,"inv_amt":241311292.0,"sell_rate":3.3,"margin":44.3,"pm":46.9,"ly":15152922.0,"growth":8.3}],"순천점":[{"cell":"남성","total":13274880.0,"net":12068063.0,"cost":5485659.0,"qty":546,"area":50.0,"inv_qty":4289,"inv_amt":79434700.0,"sell_rate":6.5,"margin":54.5,"pm":26.5,"ly":3006920.0,"growth":341.5},{"cell":"아동","total":1227711.0,"net":1062788.0,"cost":987850.0,"qty":88,"area":null,"inv_qty":491,"inv_amt":4763996.0,"sell_rate":17.2,"margin":7.1,"pm":null,"ly":9456750.0,"growth":-87.0},{"cell":"여성","total":26380300.0,"net":23982114.0,"cost":13274253.0,"qty":1941,"area":100.0,"inv_qty":19537,"inv_amt":205126723.0,"sell_rate":6.1,"margin":44.6,"pm":26.4,"ly":87611040.0,"growth":-69.9}],"신구로점":[{"cell":"남성","total":25501800.0,"net":23183524.0,"cost":6321616.0,"qty":893,"area":12.0,"inv_qty":8317,"inv_amt":91559989.0,"sell_rate":6.5,"margin":72.7,"pm":212.5,"ly":0,"growth":null},{"cell":"아동","total":5893212.0,"net":5349446.0,"cost":2126309.0,"qty":237,"area":null,"inv_qty":22329,"inv_amt":177743320.0,"sell_rate":1.2,"margin":60.3,"pm":null,"ly":0,"growth":null},{"cell":"여성","total":17273600.0,"net":15703326.0,"cost":7062796.0,"qty":959,"area":12.0,"inv_qty":8088,"inv_amt":82112613.0,"sell_rate":7.9,"margin":55.0,"pm":143.9,"ly":0,"growth":null}],"엑스코점":[{"cell":"남성","total":6728100.0,"net":6116474.0,"cost":3258138.0,"qty":253,"area":null,"inv_qty":5002,"inv_amt":109736886.0,"sell_rate":2.9,"margin":46.7,"pm":null,"ly":15011880.0,"growth":-55.2},{"cell":"아동","total":8987895.0,"net":8171674.0,"cost":3631205.0,"qty":486,"area":null,"inv_qty":29289,"inv_amt":203014029.0,"sell_rate":1.8,"margin":55.6,"pm":null,"ly":23477090.0,"growth":-61.7},{"cell":"여성","total":10681400.0,"net":9710417.0,"cost":5194554.0,"qty":421,"area":null,"inv_qty":14026,"inv_amt":241470724.0,"sell_rate":2.1,"margin":46.5,"pm":null,"ly":37108900.0,"growth":-71.2}],"울산2점":[{"cell":"남성","total":5262820.0,"net":4784391.0,"cost":2758517.0,"qty":236,"area":null,"inv_qty":5719,"inv_amt":79216268.0,"sell_rate":3.4,"margin":42.3,"pm":null,"ly":9786080.0,"growth":-46.2},{"cell":"아동","total":-34068.0,"net":-47231.0,"cost":61722.0,"qty":12,"area":null,"inv_qty":816,"inv_amt":5420660.0,"sell_rate":1.1,"margin":0,"pm":null,"ly":3440120.0,"growth":-101.0},{"cell":"여성","total":8398460.0,"net":7635004.0,"cost":3944926.0,"qty":448,"area":null,"inv_qty":6799,"inv_amt":88254653.0,"sell_rate":4.3,"margin":48.3,"pm":null,"ly":25178120.0,"growth":-66.6}],"일산점":[{"cell":"아동","total":20411161.0,"net":18554692.0,"cost":8477867.0,"qty":958,"area":null,"inv_qty":25756,"inv_amt":199022718.0,"sell_rate":4.1,"margin":54.3,"pm":null,"ly":32461400.0,"growth":-37.1}],"중계점":[{"cell":"남성","total":23327708.0,"net":21207073.0,"cost":8859394.0,"qty":785,"area":null,"inv_qty":8298,"inv_amt":89134624.0,"sell_rate":9.0,"margin":58.2,"pm":null,"ly":0,"growth":null},{"cell":"아동","total":9038604.0,"net":8200011.0,"cost":3682543.0,"qty":547,"area":null,"inv_qty":19080,"inv_amt":137449887.0,"sell_rate":2.6,"margin":55.1,"pm":null,"ly":0,"growth":null},{"cell":"여성","total":14102100.0,"net":12820140.0,"cost":5304994.0,"qty":901,"area":null,"inv_qty":8117,"inv_amt":73038444.0,"sell_rate":6.8,"margin":58.6,"pm":null,"ly":0,"growth":null}],"중앙로역점":[{"cell":"남성","total":26647400.0,"net":24225009.0,"cost":12568000.0,"qty":905,"area":null,"inv_qty":18152,"inv_amt":228449935.0,"sell_rate":5.2,"margin":48.1,"pm":null,"ly":0,"growth":null},{"cell":"아동","total":823198.0,"net":733504.0,"cost":412500.0,"qty":33,"area":null,"inv_qty":448,"inv_amt":4407346.0,"sell_rate":8.6,"margin":43.8,"pm":null,"ly":0,"growth":null},{"cell":"여성","total":10958400.0,"net":9962235.0,"cost":5256869.0,"qty":316,"area":null,"inv_qty":8217,"inv_amt":121342732.0,"sell_rate":4.2,"margin":47.2,"pm":null,"ly":0,"growth":null}],"창원점":[{"cell":"아동","total":13970864.0,"net":12697711.0,"cost":5176829.0,"qty":1044,"area":null,"inv_qty":23973,"inv_amt":174873751.0,"sell_rate":2.9,"margin":59.2,"pm":null,"ly":0,"growth":null}],"천호2점":[{"cell":"남성","total":70648400.0,"net":64226014.0,"cost":26964397.0,"qty":2286,"area":56.0,"inv_qty":16942,"inv_amt":269593126.0,"sell_rate":9.1,"margin":58.0,"pm":126.2,"ly":167385720.0,"growth":-57.8},{"cell":"아동","total":21605801.0,"net":19637271.0,"cost":8410776.0,"qty":1332,"area":2.0,"inv_qty":28276,"inv_amt":198292158.0,"sell_rate":4.1,"margin":57.2,"pm":1080.3,"ly":170089354.0,"growth":-87.3},{"cell":"여성","total":47101200.0,"net":42819437.0,"cost":20560807.0,"qty":2401,"area":65.0,"inv_qty":29532,"inv_amt":386983336.0,"sell_rate":5.0,"margin":52.0,"pm":72.5,"ly":80196797.0,"growth":-41.3}],"평촌2점":[{"cell":"남성","total":4287300.0,"net":3897556.0,"cost":1373089.0,"qty":168,"area":null,"inv_qty":654,"inv_amt":4937525.0,"sell_rate":21.8,"margin":64.8,"pm":null,"ly":30838800.0,"growth":-86.1},{"cell":"아동","total":19355766.0,"net":17588398.0,"cost":7716335.0,"qty":1034,"area":null,"inv_qty":30743,"inv_amt":222122869.0,"sell_rate":3.4,"margin":56.1,"pm":null,"ly":20000.0,"growth":96678.8},{"cell":"여성","total":53281790.0,"net":48438013.0,"cost":15638923.0,"qty":1869,"area":null,"inv_qty":14104,"inv_amt":113609895.0,"sell_rate":12.1,"margin":67.7,"pm":null,"ly":88031990.0,"growth":-39.5}]},"daily_by_branch":{"NC대전 유성점":[{"d":"05-01","t":7175611.0},{"d":"05-02","t":5405630.0},{"d":"05-03","t":6290403.0},{"d":"05-04","t":2715085.0},{"d":"05-05","t":5963093.0},{"d":"05-06","t":1501180.0},{"d":"05-07","t":2243460.0},{"d":"05-08","t":2887600.0},{"d":"05-09","t":6246209.0},{"d":"05-10","t":5857260.0},{"d":"05-11","t":1647400.0},{"d":"05-12","t":1448600.0},{"d":"05-13","t":2350900.0}],"강남점":[{"d":"05-01","t":16300416.0},{"d":"05-02","t":11096083.0},{"d":"05-03","t":11101438.0},{"d":"05-04","t":8395101.0},{"d":"05-05","t":13214065.0},{"d":"05-06","t":5752364.0},{"d":"05-07","t":8449036.0},{"d":"05-08","t":9970080.0},{"d":"05-09","t":15180861.0},{"d":"05-10","t":9882949.0},{"d":"05-11","t":4886143.0},{"d":"05-12","t":5678560.0},{"d":"05-13","t":7481660.0}],"강서점":[{"d":"05-01","t":28827002.0},{"d":"05-02","t":33476172.0},{"d":"05-03","t":25678502.0},{"d":"05-04","t":16288866.0},{"d":"05-05","t":29211799.0},{"d":"05-06","t":10694361.0},{"d":"05-07","t":9783814.0},{"d":"05-08","t":11462418.0},{"d":"05-09","t":28183891.0},{"d":"05-10","t":22448989.0},{"d":"05-11","t":8024600.0},{"d":"05-12","t":11882220.0},{"d":"05-13","t":13281300.0}],"광명점":[{"d":"05-01","t":32019123.0},{"d":"05-02","t":19868253.0},{"d":"05-03","t":15361741.0},{"d":"05-04","t":12254828.0},{"d":"05-05","t":19285455.0},{"d":"05-06","t":5128864.0},{"d":"05-07","t":5361900.0},{"d":"05-08","t":6545750.0},{"d":"05-09","t":8632368.0},{"d":"05-10","t":10603891.0},{"d":"05-11","t":2269500.0},{"d":"05-12","t":4298600.0},{"d":"05-13","t":4680600.0}],"동수원":[{"d":"05-01","t":8258390.0},{"d":"05-02","t":7153680.0},{"d":"05-03","t":4981270.0},{"d":"05-04","t":4694100.0},{"d":"05-05","t":5662100.0},{"d":"05-06","t":2963400.0},{"d":"05-07","t":2016700.0},{"d":"05-08","t":5028700.0},{"d":"05-09","t":5193100.0},{"d":"05-10","t":4509300.0},{"d":"05-11","t":2116000.0},{"d":"05-12","t":3235300.0},{"d":"05-13","t":3865600.0}],"물류 센타":[{"d":"05-01","t":0.0},{"d":"05-11","t":0.0}],"부산대점":[{"d":"05-01","t":1652191.0},{"d":"05-02","t":942190.0},{"d":"05-03","t":914620.0},{"d":"05-04","t":342700.0},{"d":"05-05","t":1108013.0},{"d":"05-06","t":351840.0},{"d":"05-07","t":74400.0},{"d":"05-08","t":441620.0},{"d":"05-09","t":459780.0},{"d":"05-10","t":643120.0},{"d":"05-11","t":241680.0},{"d":"05-12","t":619850.0},{"d":"05-13","t":429020.0}],"부천점":[{"d":"05-01","t":2475979.0},{"d":"05-02","t":2269055.0},{"d":"05-03","t":2472865.0},{"d":"05-04","t":1842821.0},{"d":"05-05","t":3073580.0},{"d":"05-06","t":1074060.0},{"d":"05-07","t":991240.0},{"d":"05-08","t":1008480.0},{"d":"05-09","t":922500.0},{"d":"05-10","t":1773180.0},{"d":"05-11","t":434900.0},{"d":"05-12","t":1119240.0},{"d":"05-13","t":1317160.0}],"분당점":[{"d":"05-01","t":21953814.0},{"d":"05-02","t":20577615.0},{"d":"05-03","t":29900.0},{"d":"05-04","t":10079493.0},{"d":"05-05","t":20611074.0},{"d":"05-06","t":7206746.0},{"d":"05-07","t":11207355.0},{"d":"05-08","t":17992203.0},{"d":"05-09","t":16810363.0},{"d":"05-10","t":240060.0},{"d":"05-11","t":8061353.0},{"d":"05-12","t":9272390.0},{"d":"05-13","t":10911430.0}],"불광점":[{"d":"05-01","t":6449087.0},{"d":"05-02","t":4975082.0},{"d":"05-03","t":5491445.0},{"d":"05-04","t":1933035.0},{"d":"05-05","t":5234820.0},{"d":"05-06","t":2570400.0},{"d":"05-07","t":2773621.0},{"d":"05-08","t":3690960.0},{"d":"05-09","t":4677488.0},{"d":"05-10","t":4751650.0},{"d":"05-11","t":1953590.0},{"d":"05-12","t":1977000.0},{"d":"05-13","t":3672560.0}],"산본점":[{"d":"05-01","t":3782126.0},{"d":"05-02","t":9354215.0},{"d":"05-03","t":7223400.0},{"d":"05-04","t":8300427.0},{"d":"05-05","t":7889009.0},{"d":"05-06","t":1845905.0},{"d":"05-07","t":1847928.0},{"d":"05-08","t":1633600.0},{"d":"05-09","t":1830958.0},{"d":"05-10","t":2448164.0},{"d":"05-11","t":1373000.0},{"d":"05-12","t":1200400.0},{"d":"05-13","t":1823200.0}],"송파점":[{"d":"05-01","t":26217024.0},{"d":"05-02","t":21681493.0},{"d":"05-03","t":20315799.0},{"d":"05-04","t":13081711.0},{"d":"05-05","t":21902014.0},{"d":"05-06","t":6023740.0},{"d":"05-07","t":7277302.0},{"d":"05-08","t":13241577.0},{"d":"05-09","t":19858117.0},{"d":"05-10","t":17507603.0},{"d":"05-11","t":5609760.0},{"d":"05-12","t":6732168.0},{"d":"05-13","t":9996240.0}],"쇼핑점":[{"d":"05-01","t":3809259.0},{"d":"05-02","t":2659593.0},{"d":"05-03","t":2211013.0},{"d":"05-04","t":2737201.0},{"d":"05-05","t":3418419.0},{"d":"05-06","t":1015046.0},{"d":"05-07","t":1286910.0},{"d":"05-08","t":826063.0},{"d":"05-09","t":1491113.0},{"d":"05-10","t":1600068.0},{"d":"05-11","t":857360.0},{"d":"05-12","t":1205920.0},{"d":"05-13","t":1261620.0}],"수성점":[{"d":"05-01","t":2286599.0},{"d":"05-02","t":4505763.0},{"d":"05-03","t":2489391.0},{"d":"05-04","t":1618200.0},{"d":"05-05","t":2564458.0},{"d":"05-06","t":1434595.0},{"d":"05-07","t":1680800.0},{"d":"05-08","t":1348254.0},{"d":"05-09","t":2117382.0},{"d":"05-10","t":3299645.0},{"d":"05-11","t":1610540.0},{"d":"05-12","t":803900.0},{"d":"05-13","t":8631300.0}],"수원터미널점":[{"d":"05-01","t":14466307.0},{"d":"05-02","t":5817778.0},{"d":"05-03","t":6569609.0},{"d":"05-04","t":4590889.0},{"d":"05-05","t":7454549.0},{"d":"05-06","t":1505202.0},{"d":"05-07","t":1749740.0},{"d":"05-08","t":2493787.0},{"d":"05-09","t":4463919.0},{"d":"05-10","t":4195060.0},{"d":"05-11","t":1369590.0},{"d":"05-12","t":2043010.0},{"d":"05-13","t":2739360.0}],"순천점":[{"d":"05-01","t":8918333.0},{"d":"05-02","t":4060679.0},{"d":"05-03","t":5894479.0},{"d":"05-04","t":1989880.0},{"d":"05-05","t":1960591.0},{"d":"05-06","t":2950618.0},{"d":"05-07","t":1764100.0},{"d":"05-08","t":3004601.0},{"d":"05-09","t":3509810.0},{"d":"05-10","t":3270000.0},{"d":"05-11","t":1089300.0},{"d":"05-12","t":1191700.0},{"d":"05-13","t":1278800.0}],"신구로점":[{"d":"05-01","t":7729915.0},{"d":"05-02","t":5383760.0},{"d":"05-03","t":3660861.0},{"d":"05-04","t":2732463.0},{"d":"05-05","t":5961497.0},{"d":"05-06","t":2634960.0},{"d":"05-07","t":2087820.0},{"d":"05-08","t":2356910.0},{"d":"05-09","t":4649373.0},{"d":"05-10","t":5457853.0},{"d":"05-11","t":1657000.0},{"d":"05-12","t":1904000.0},{"d":"05-13","t":2452200.0}],"엑스코점":[{"d":"05-01","t":4055576.0},{"d":"05-02","t":3083164.0},{"d":"05-03","t":3792056.0},{"d":"05-04","t":1569244.0},{"d":"05-05","t":3500404.0},{"d":"05-06","t":526000.0},{"d":"05-07","t":482500.0},{"d":"05-08","t":913560.0},{"d":"05-09","t":2991440.0},{"d":"05-10","t":2745631.0},{"d":"05-11","t":616820.0},{"d":"05-12","t":1445360.0},{"d":"05-13","t":675640.0}],"울산2점":[{"d":"05-01","t":1166900.0},{"d":"05-02","t":3419241.0},{"d":"05-03","t":824501.0},{"d":"05-04","t":889662.0},{"d":"05-05","t":1451008.0},{"d":"05-06","t":704900.0},{"d":"05-07","t":588700.0},{"d":"05-08","t":941300.0},{"d":"05-09","t":642600.0},{"d":"05-10","t":651700.0},{"d":"05-11","t":847900.0},{"d":"05-12","t":664100.0},{"d":"05-13","t":834700.0}],"일산점":[{"d":"05-01","t":2113180.0},{"d":"05-02","t":2568224.0},{"d":"05-03","t":1645520.0},{"d":"05-04","t":752020.0},{"d":"05-05","t":1862677.0},{"d":"05-06","t":340800.0},{"d":"05-07","t":564100.0},{"d":"05-08","t":1438880.0},{"d":"05-09","t":2069640.0},{"d":"05-10","t":2210780.0},{"d":"05-11","t":601700.0},{"d":"05-12","t":2661500.0},{"d":"05-13","t":1582140.0}],"중계점":[{"d":"05-01","t":5385515.0},{"d":"05-02","t":4986533.0},{"d":"05-03","t":3215729.0},{"d":"05-04","t":3460922.0},{"d":"05-05","t":5033524.0},{"d":"05-06","t":1771711.0},{"d":"05-07","t":1428100.0},{"d":"05-08","t":3277230.0},{"d":"05-09","t":6342568.0},{"d":"05-10","t":5854600.0},{"d":"05-11","t":1455760.0},{"d":"05-12","t":2445460.0},{"d":"05-13","t":1810760.0}],"중앙로역점":[{"d":"05-01","t":6691294.0},{"d":"05-02","t":6058054.0},{"d":"05-03","t":4216600.0},{"d":"05-04","t":1791600.0},{"d":"05-05","t":6140768.0},{"d":"05-06","t":939200.0},{"d":"05-07","t":604300.0},{"d":"05-08","t":1276400.0},{"d":"05-09","t":4216300.0},{"d":"05-10","t":3767882.0},{"d":"05-11","t":797400.0},{"d":"05-12","t":847700.0},{"d":"05-13","t":1081500.0}],"창원점":[{"d":"05-01","t":3911215.0},{"d":"05-02","t":1622700.0},{"d":"05-03","t":1470235.0},{"d":"05-04","t":1143469.0},{"d":"05-05","t":1203800.0},{"d":"05-06","t":508960.0},{"d":"05-07","t":627800.0},{"d":"05-08","t":576260.0},{"d":"05-09","t":703880.0},{"d":"05-10","t":1039945.0},{"d":"05-11","t":297260.0},{"d":"05-12","t":247780.0},{"d":"05-13","t":617560.0}],"천호2점":[{"d":"05-01","t":17832236.0},{"d":"05-02","t":12943955.0},{"d":"05-03","t":12707272.0},{"d":"05-04","t":11603232.0},{"d":"05-05","t":16738903.0},{"d":"05-06","t":6896080.0},{"d":"05-07","t":6036091.0},{"d":"05-08","t":9918120.0},{"d":"05-09","t":13750760.0},{"d":"05-10","t":12699052.0},{"d":"05-11","t":3596560.0},{"d":"05-12","t":7472640.0},{"d":"05-13","t":7160500.0}],"평촌2점":[{"d":"05-01","t":8744488.0},{"d":"05-02","t":6284067.0},{"d":"05-03","t":6223483.0},{"d":"05-04","t":7217036.0},{"d":"05-05","t":7313682.0},{"d":"05-06","t":4505520.0},{"d":"05-07","t":4469120.0},{"d":"05-08","t":4454740.0},{"d":"05-09","t":7789810.0},{"d":"05-10","t":5900510.0},{"d":"05-11","t":4090340.0},{"d":"05-12","t":3870580.0},{"d":"05-13","t":6061480.0}]}};
+const f8=v=>{if(!v&&v!==0)return"—";const a=Math.abs(v);if(a>=1e8)return(v/1e8).toFixed(1)+"억";if(a>=1e6)return(v/1e6).toFixed(0)+"백만";return v;};
+const fn=v=>Math.round(v||0).toLocaleString();
+const fp=v=>v!=null?v.toFixed(1)+"%":"—";
+const gc="rgba(255,255,255,0.05)",lc="rgba(200,190,175,0.5)";
+const CC={남성:"#4ECDC4",여성:"#FF6B9D",아동:"#FFD166"};
+const TC={픽스:"#4ECDC4","픽스 키즈":"#B48FE0",중간관리:"#FFD166",기타:"#7A7268"};
+const ptitles={p0:"일매출 현황",p1:"지점별 실적",p2:"지점 유형별",p3:"월별 트렌드",p4:"입고·판매",p5:"재고 현황",p6:"픽스 평매출"};
+Chart.defaults.color=lc;Chart.defaults.borderColor=gc;
+let dpChart=null,currentType="전체";
+
+// ── 네비 ────────────────────────────────────────────
+function GO(id,el){
+  document.querySelectorAll(".page").forEach(p=>p.className="page");
+  document.querySelectorAll(".nav-item").forEach(n=>n.className="nav-item");
+  document.querySelectorAll(".bn-item").forEach(b=>b.classList.remove("on"));
+  document.getElementById(id).className="page on";
+  if(el){
+    // 사이드바 아이템
+    if(el.classList.contains("nav-item")) el.className="nav-item on";
+    // 하단 네비 아이템
+    if(el.classList.contains("bn-item")) el.classList.add("on");
+  }
+  document.getElementById("page-title").textContent=ptitles[id]||"—";
+  window.scrollTo(0,0);
+}
+function showMoreMenu(){
+  const m=document.getElementById("more-menu");
+  m.style.display=m.style.display==="none"?"block":"none";
+}
+function hideMoreMenu(){document.getElementById("more-menu").style.display="none";}
+document.addEventListener("click",e=>{
+  const mm=document.getElementById("more-menu");
+  if(!mm.contains(e.target)&&!e.target.closest("[onclick='showMoreMenu()']"))
+    mm.style.display="none";
+});
+
+function pil(v,g,a){return"<span class=\"pill "+(v>=g?"pg":v>=a?"pa":"pr")+"\">"+(v!=null?v.toFixed(1)+"%":"—")+"</span>";}
+
+const d=DATA,daily=d.daily||[],branches=d.branches||[];
+const cellData=d.cell||{},typeData=d.type||{},trend=d.trend||[];
+const sm=d.sm||[],inv=d.inv||[],fix=d.fix||[];
+const cellByBranch=d.cell_by_branch||{},dailyByBranch=d.daily_by_branch||{};
+const tot=daily.reduce((s,r)=>s+(r.t||0),0);
+const tot_ly=daily.reduce((s,r)=>s+(r.ly||0),0);
+const tot_tgt=daily.reduce((s,r)=>s+(r.target||0),0);
+const best=daily.length?daily.reduce((a,b)=>a.t>b.t?a:b):{t:0,d:"—"};
+const growth=tot_ly>0?((tot/tot_ly-1)*100).toFixed(1):null;
+const rate=tot_tgt>0?(tot/tot_tgt*100).toFixed(1):null;
+const cellTot={남성:daily.reduce((s,r)=>s+(r.m||0),0),여성:daily.reduce((s,r)=>s+(r.w||0),0),아동:daily.reduce((s,r)=>s+(r.k||0),0)};
+
+// P0
+document.getElementById("k-tot").textContent=f8(tot);
+document.getElementById("k-tot-d").textContent="04-08 누계";
+document.getElementById("k-rate").textContent=rate?rate+"%":"—";
+document.getElementById("k-rate").style.color=rate&&+rate>=100?"var(--green)":"var(--red)";
+document.getElementById("k-rate-d").textContent=rate?(+rate>=100?"▲달성":"▼미달"):"—";
+document.getElementById("k-growth").textContent=growth?(+growth>=0?"+":"")+growth+"%":"—";
+document.getElementById("k-growth").style.color=growth&&+growth>=0?"var(--green)":"var(--red)";
+document.getElementById("k-best").textContent=f8(best.t);
+document.getElementById("k-best-d").textContent=best.d+" 최고";
+document.getElementById("s-m").textContent=f8(cellTot["남성"]);
+document.getElementById("s-w").textContent=f8(cellTot["여성"]);
+document.getElementById("s-k").textContent=f8(cellTot["아동"]);
+document.getElementById("s-br").textContent=branches.length;
+["ms","ws","ks"].forEach((id,i)=>{const cn=["남성","여성","아동"][i];document.getElementById("s-"+id).textContent=f8(cellTot[cn]/8)+" 일평균";});
+
+new Chart(document.getElementById("c-daily"),{type:"bar",data:{labels:daily.map(r=>r.d),datasets:[
+  {label:"실적",data:daily.map(r=>r.t),backgroundColor:"rgba(78,205,196,.7)",borderRadius:4,order:2},
+  {label:"목표",data:daily.map(r=>r.target),type:"line",borderColor:"rgba(255,209,102,.6)",borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false,order:1},
+  {label:"전년",data:daily.map(r=>r.ly),type:"line",borderColor:"rgba(100,95,90,.5)",borderWidth:1,borderDash:[3,3],pointRadius:0,fill:false,order:1},
+]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:"rgba(25,22,18,.95)",borderColor:"rgba(255,255,255,.1)",borderWidth:1,padding:8,callbacks:{label:c=>c.dataset.label+": "+f8(c.raw)}}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>f8(v)}}}}});
+
+new Chart(document.getElementById("c-cell-bar"),{type:"bar",data:{labels:["남성","여성","아동"],datasets:[{data:[cellTot["남성"],cellTot["여성"],cellTot["아동"]],backgroundColor:["rgba(78,205,196,.7)","rgba(255,107,157,.7)","rgba(255,209,102,.7)"],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:10}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:10},callback:v=>f8(v)}}}}});
+
+const cTotArr=[cellTot["남성"],cellTot["여성"],cellTot["아동"]];
+const totAll2=cTotArr.reduce((a,b)=>a+b,0);
+const cPie=new Chart(document.getElementById("c-pie"),{type:"doughnut",data:{labels:["남성","여성","아동"],datasets:[{data:cTotArr,backgroundColor:["rgba(78,205,196,.8)","rgba(255,107,157,.8)","rgba(255,209,102,.8)"],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:"62%",plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+": "+f8(c.raw)}}}}});
+const lg=document.getElementById("cell-leg");
+["남성","여성","아동"].forEach((cn,i)=>{lg.innerHTML+=`<span style="display:flex;align-items:center;gap:3px"><span style="width:6px;height:6px;border-radius:50%;background:${CC[cn]};display:inline-block"></span>${cn} ${Math.round(cTotArr[i]/totAll2*100)}%</span>`;});
+
+new Chart(document.getElementById("c-rate"),{type:"line",data:{labels:daily.map(r=>r.d),datasets:[{label:"달성율%",data:daily.map(r=>r.rate),borderColor:"#4D9FFF",backgroundColor:"rgba(77,159,255,.1)",borderWidth:2,pointRadius:2,fill:true,tension:0.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>v+"%"}}}}});
+new Chart(document.getElementById("c-growth"),{type:"bar",data:{labels:daily.map(r=>r.d),datasets:[{label:"YoY%",data:daily.map(r=>r.growth),backgroundColor:daily.map(r=>(r.growth||0)>=0?"rgba(107,203,119,.65)":"rgba(255,107,107,.65)"),borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>v+"%"}}}}});
+
+const ctbl=document.getElementById("cell-tbl");
+["남성","여성","아동"].forEach(cn=>{const c=cellData[cn];if(!c)return;ctbl.innerHTML+=`<tr><td style="color:${CC[cn]};font-weight:600">${cn}</td><td style="text-align:right">${f8(c.total)}</td><td style="text-align:right">${pil(c.sell_rate||0,30,15)}</td><td style="text-align:right;color:var(--text3)">${fp(c.tcr)}</td><td style="text-align:right">${pil(c.margin||0,20,0)}</td></tr>`;});
+
+// P1
+function initP1(filtered){
+  filtered=filtered||branches;
+  document.getElementById("b-cnt").textContent=filtered.length+"개";
+  document.getElementById("b-top").textContent=filtered[0]?.name||"—";
+  document.getElementById("b-top-a").textContent=f8(filtered[0]?.total||0);
+  const sr=filtered.filter(b=>b.sell_rate),mg=filtered.filter(b=>b.margin);
+  document.getElementById("b-sell").textContent=sr.length?(sr.reduce((s,b)=>s+(b.sell_rate||0),0)/sr.length).toFixed(1)+"%":"—";
+  document.getElementById("b-mg").textContent=mg.length?(mg.reduce((s,b)=>s+(b.margin||0),0)/mg.length).toFixed(1)+"%":"—";
+  const bMax=filtered[0]?.total||1,bb=document.getElementById("branch-bars");bb.innerHTML="";
+  filtered.slice(0,15).forEach((b,i)=>{const op=Math.max(1-i*0.04,.35);bb.innerHTML+=`<div class="br"><div class="bn">${b.name}</div><div class="bg2b"><div class="bf" style="width:${Math.round(b.total/bMax*100)}%;background:rgba(78,205,196,${op})"></div></div><div class="bv">${f8(b.total)}</div></div>`;});
+  const btbl=document.getElementById("branch-tbl");btbl.innerHTML="";
+  filtered.forEach((b,i)=>{const tc=TC[b.type]||"#7A7268";btbl.innerHTML+=`<tr onclick="openDetail('${b.name}')"><td style="color:var(--text3)">${i+1}</td><td style="color:var(--teal);cursor:pointer">${b.name}</td><td><span style="color:${tc};font-size:9px">${b.type}</span></td><td style="text-align:right">${f8(b.total)}</td><td style="text-align:right">${pil(b.sell_rate||0,30,15)}</td><td style="text-align:right">${pil(b.margin||0,20,0)}</td></tr>`;});
+}
+
+// P2
+const tpOrder=[["픽스","#4ECDC4"],["픽스 키즈","#B48FE0"],["중간관리","#FFD166"],["기타","#7A7268"]];
+const tc2=document.getElementById("type-cards");
+tpOrder.forEach(([tp,color])=>{const td=typeData[tp];if(!td)return;const ts=Object.values(td).reduce((s,c)=>s+(c.total||0),0);const am=(Object.values(td).reduce((s,c)=>s+(c.margin||0),0)/Object.values(td).length).toFixed(1);tc2.innerHTML+=`<div class="tc"><div class="tc-bar" style="background:${color}"></div><div class="tc-name">${tp}</div><div class="tc-amt" style="color:${color};font-size:20px">${f8(ts)}</div><div class="tc-sub">매총율 ${am}%</div></div>`;});
+new Chart(document.getElementById("c-type"),{type:"bar",data:{labels:daily.map(r=>r.d),datasets:tpOrder.map(([tp,color])=>{const td=typeData[tp];const ratio=td?Object.values(td).reduce((s,c)=>s+(c.total||0),0)/tot:0;const bg=color==="#7A7268"?"rgba(100,95,90,.55)":color+"b3";return{label:tp,data:daily.map(r=>r.t*ratio),backgroundColor:bg,borderRadius:3,stack:"s"};})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+": "+f8(c.raw)}}},scales:{x:{stacked:true,grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{stacked:true,grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>f8(v)}}}}});
+const ttbl=document.getElementById("type-tbl");
+tpOrder.forEach(([tp,color])=>{const td=typeData[tp];if(!td)return;Object.entries(td).forEach(([cn,cv],j)=>{ttbl.innerHTML+=`<tr>${j===0?`<td rowspan="${Object.keys(td).length}" style="color:${color};font-weight:600">${tp}</td>`:""}<td style="color:${CC[cn]||"var(--text2)"}">${cn}</td><td style="text-align:right">${f8(cv.total)}</td><td style="text-align:right">${pil(cv.sell_rate||0,30,15)}</td><td style="text-align:right">${pil(cv.margin||0,20,0)}</td></tr>`;});});
+
+// P3
+const bestT=trend.reduce((a,b)=>a.sales>b.sales?a:b,{sales:0,ym:"—"}),latT=trend[trend.length-1]||{};
+document.getElementById("tr-best").textContent=f8(bestT.sales);document.getElementById("tr-best-d").textContent=bestT.ym;
+document.getElementById("tr-mg").textContent=fp(latT.margin);document.getElementById("tr-sr").textContent=fp(latT.sell_rate);
+const lbl=trend.map(r=>r.ym.slice(2));
+new Chart(document.getElementById("c-trend"),{type:"bar",data:{labels:lbl,datasets:[{label:"매출",data:trend.map(r=>r.sales),backgroundColor:trend.map(r=>r.ym.startsWith("2026")?"rgba(78,205,196,.75)":"rgba(78,205,196,.28)"),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>f8(c.raw)}}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>f8(v)}}}}});
+new Chart(document.getElementById("c-tr-mg"),{type:"line",data:{labels:lbl,datasets:[{label:"매총율%",data:trend.map(r=>r.margin),borderColor:"#FF6B9D",backgroundColor:"rgba(255,107,157,.1)",borderWidth:2,pointRadius:2,fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>v+"%"}}}}});
+new Chart(document.getElementById("c-tr-st"),{type:"line",data:{labels:lbl,datasets:[{label:"재고",data:trend.map(r=>(r.stock||0)/1e9),borderColor:"#B48FE0",backgroundColor:"rgba(180,143,224,.1)",borderWidth:2,pointRadius:2,fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>v+"B"}}}}});
+
+// P4
+const ti=sm.reduce((s,r)=>s+r.iq,0),ts=sm.reduce((s,r)=>s+r.sq,0),bs=sm.reduce((a,b)=>a.sq>b.sq?a:b,{sq:0,d:"—"});
+document.getElementById("s-in").textContent=fn(ti);document.getElementById("s-sl").textContent=fn(ts);
+document.getElementById("s-rt").textContent=ti>0?Math.round(ts/ti*100)+"%":"—";
+document.getElementById("s-best").textContent=bs.d;document.getElementById("s-best-d").textContent=fn(bs.sq)+"개";
+new Chart(document.getElementById("c-sm"),{type:"bar",data:{labels:sm.map(r=>r.d),datasets:[{label:"입고량",data:sm.map(r=>r.iq),backgroundColor:"rgba(77,159,255,.65)",borderRadius:4},{label:"판매량",data:sm.map(r=>r.sq),backgroundColor:"rgba(78,205,196,.65)",borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+": "+fn(c.raw)}}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>fn(v)}}}}});
+
+// P5
+const noWh=inv.filter(r=>r.name!=="물류 센타"),negItems=inv.filter(r=>r.neg_q<0);
+document.getElementById("i-qty").textContent=fn(noWh.reduce((s,r)=>s+r.qty,0));
+document.getElementById("i-amt").textContent=f8(noWh.reduce((s,r)=>s+r.amt,0));
+document.getElementById("i-neg").textContent=negItems.length+"건";
+if(negItems.length>0){const nc=document.getElementById("neg-chip");nc.style.display="";nc.textContent="⚠ "+negItems.length+"건";}
+const topI=noWh.reduce((a,b)=>a.amt>b.amt?a:b,{name:"—",amt:0});
+document.getElementById("i-top").textContent=topI.name;document.getElementById("i-top-a").textContent=f8(topI.amt);
+const iTop=noWh.slice().sort((a,b)=>b.amt-a.amt).slice(0,12),iMax=iTop[0]?.amt||1,ib=document.getElementById("inv-bars");
+iTop.forEach((r,i)=>{const op=Math.max(1-i*0.05,.3);ib.innerHTML+=`<div class="br"><div class="bn">${r.name} ${r.cell}</div><div class="bg2b"><div class="bf" style="width:${Math.round(r.amt/iMax*100)}%;background:rgba(180,143,224,${op})"></div></div><div class="bv" style="color:#B48FE0">${f8(r.amt)}</div></div>`;});
+const nt=document.getElementById("neg-tbl");
+negItems.forEach(r=>{nt.innerHTML+=`<tr><td>${r.name}</td><td style="color:${CC[r.cell]||"var(--text2)"}">${r.cell}</td><td style="text-align:right;color:var(--red)">${fn(r.neg_q)}</td><td style="text-align:right;color:var(--red)">${f8(r.neg_a)}</td></tr>`;});
+document.getElementById("warn-box").textContent="총 "+f8(negItems.reduce((s,r)=>s+r.neg_a,0))+" — 즉시 확인";
+
+// P6
+document.getElementById("fx-cnt").textContent=new Set(fix.map(r=>r.name)).size+"개점";
+const bf=fix.length?fix.reduce((a,b)=>a.pm>b.pm?a:b):{pm:0,name:"—",cell:""};
+document.getElementById("fx-pm").textContent=(bf.pm||0).toFixed(1);document.getElementById("fx-pm-d").textContent=bf.name+" "+bf.cell;
+const tv=fix.filter(r=>r.tcr),mv=fix.filter(r=>r.margin);
+document.getElementById("fx-tcr").textContent=tv.length?(tv.reduce((s,r)=>s+r.tcr,0)/tv.length).toFixed(1)+"%":"—";
+document.getElementById("fx-mg").textContent=mv.length?(mv.reduce((s,r)=>s+r.margin,0)/mv.length).toFixed(1)+"%":"—";
+const fxBr=[...new Set(fix.map(r=>r.name))];
+new Chart(document.getElementById("c-fx"),{type:"bar",data:{labels:fxBr,datasets:["남성","여성","아동"].map((cn,ci)=>{const cols=["rgba(78,205,196,.75)","rgba(255,107,157,.75)","rgba(255,209,102,.75)"];return{label:cn,data:fxBr.map(b=>{const r=fix.find(r=>r.name===b&&r.cell===cn);return r?r.pm:0;}),backgroundColor:cols[ci],borderRadius:3,barPercentage:0.7};})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:"top",labels:{color:lc,font:{size:10},boxWidth:10}},tooltip:{callbacks:{label:c=>c.dataset.label+": "+c.raw+"만/평"}}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>v+"만"}}}}});
+const ft=document.getElementById("fx-tbl");
+fix.forEach(r=>{ft.innerHTML+=`<tr><td>${r.name}</td><td style="color:${CC[r.cell]||"var(--text2)"}">${r.cell}</td><td style="text-align:right;color:var(--text3)">${r.area}평</td><td style="text-align:right">${f8(r.total)}</td><td style="text-align:right;color:var(--yellow);font-weight:600">${r.pm}만</td><td style="text-align:right">${pil(r.margin||0,20,0)}</td></tr>`;});
+
+// 필터
+function filterType(type,el){
+  currentType=type;
+  document.querySelectorAll(".tf-btn").forEach(b=>b.classList.remove("on"));
+  el.classList.add("on");
+  const filtered=type==="전체"?branches:branches.filter(b=>b.type===type);
+  initP1(filtered);
+  const cF={남성:0,여성:0,아동:0};
+  filtered.forEach(b=>{(cellByBranch[b.name]||[]).forEach(c=>{cF[c.cell]=(cF[c.cell]||0)+(c.total||0);});});
+  document.getElementById("s-m").textContent=f8(cF["남성"]);
+  document.getElementById("s-w").textContent=f8(cF["여성"]);
+  document.getElementById("s-k").textContent=f8(cF["아동"]);
+  document.getElementById("s-br").textContent=filtered.length;
+  document.getElementById("k-tot").textContent=f8(filtered.reduce((s,b)=>s+(b.total||0),0));
+}
+
+// 상세 패널
+function openDetail(bn){
+  const cells=cellByBranch[bn]||[],dayData=dailyByBranch[bn]||[],brInfo=branches.find(b=>b.name===bn)||{};
+  document.getElementById("dp-name").textContent=bn;
+  document.getElementById("dp-meta").textContent=(brInfo.type||"")+" · 2026년 4월 · 8일분";
+  const totC=cells.reduce((s,c)=>s+(c.total||0),0),totN=cells.reduce((s,c)=>s+(c.net||0),0),totCo=cells.reduce((s,c)=>s+(c.cost||0),0),totLy=cells.reduce((s,c)=>s+(c.ly||0),0),totInv=cells.reduce((s,c)=>s+(c.inv_amt||0),0);
+  const avgMg=totN>0?((totN-totCo)/totN*100).toFixed(1):null,sellR=totCo+totInv>0?(totCo/(totCo+totInv)*100).toFixed(1):null,gro=totLy>0?((totC/totLy-1)*100).toFixed(1):null;
+  document.getElementById("dp-krow").innerHTML=`<div class="dp-kpi"><div class="dp-kpi-l">누계 실적</div><div class="dp-kpi-v" style="color:var(--teal)">${f8(totC)}</div><div class="dp-kpi-s">일평균 ${f8(totC/8)}</div></div><div class="dp-kpi"><div class="dp-kpi-l">매총율</div><div class="dp-kpi-v" style="color:var(--pink)">${avgMg?avgMg+"%":"—"}</div><div class="dp-kpi-s">순이익/실매출</div></div><div class="dp-kpi"><div class="dp-kpi-l">판매율</div><div class="dp-kpi-v" style="color:var(--yellow)">${sellR?sellR+"%":"—"}</div><div class="dp-kpi-s">원가/입고원가</div></div><div class="dp-kpi"><div class="dp-kpi-l">전년 성장</div><div class="dp-kpi-v" style="color:${gro&&+gro>=0?"var(--green)":"var(--red)"}">${gro?(+gro>=0?"+":"")+gro+"%":"—"}</div><div class="dp-kpi-s">YoY</div></div>`;
+  if(dpChart){dpChart.destroy();dpChart=null;}
+  dpChart=new Chart(document.getElementById("dp-chart"),{type:"line",data:{labels:dayData.map(r=>r.d),datasets:[{label:"실적",data:dayData.map(r=>r.t),borderColor:"var(--teal)",backgroundColor:"rgba(78,205,196,.1)",borderWidth:2,pointRadius:3,pointBackgroundColor:"var(--teal)",fill:true,tension:0.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>f8(c.raw)}}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>f8(v)}}}}});
+  const ctbl=document.getElementById("dp-ctbl");ctbl.innerHTML="";
+  cells.forEach(c=>{const g=c.growth;ctbl.innerHTML+=`<tr><td style="color:${CC[c.cell]||"var(--text)"}">${c.cell}</td><td style="text-align:right">${f8(c.total)}</td><td style="text-align:right;color:var(--text3)">${c.ly?f8(c.ly):"—"}</td><td style="text-align:right;color:${g&&+g>=0?"var(--green)":"var(--red)"}">${g?(+g>=0?"+":"")+g+"%":"—"}</td><td style="text-align:right">${pil(c.sell_rate||0,30,15)}</td><td style="text-align:right">${pil(c.margin||0,20,0)}</td><td style="text-align:right;color:var(--purple)">${c.pm?c.pm+"만/평":"—"}</td></tr>`;});
+  const diag=document.getElementById("dp-diag");diag.innerHTML="";
+  [{label:"매출 성장율",desc:`전년 대비 ${gro?gro+"%":"데이터 없음"}`,st:gro&&+gro>=10?"ok":gro&&+gro>=0?"warn":"alert",dot:"var(--teal)"},
+   {label:"매총율",desc:`${avgMg?avgMg+"%":"—"} ${avgMg&&+avgMg>=20?"▲ 양호":"▼ 점검"}`,st:avgMg&&+avgMg>=20?"ok":avgMg&&+avgMg>=0?"warn":"alert",dot:"var(--pink)"},
+   {label:"판매율",desc:`${sellR?sellR+"%":"—"} ${sellR&&+sellR>=30?"▲ 양호":"▼ 재고 주의"}`,st:sellR&&+sellR>=30?"ok":sellR&&+sellR>=15?"warn":"alert",dot:"var(--yellow)"},
+  ].forEach(it=>{diag.innerHTML+=`<div class="dp-ind"><div class="dp-ind-l"><div class="ind-dot" style="background:${it.dot}"></div><div><div class="ind-label">${it.label}</div><div class="ind-desc">${it.desc}</div></div></div><span class="ind-badge b-${it.st}">${it.st==="ok"?"정상":it.st==="warn"?"주의":"점검"}</span></div>`;});
+  document.getElementById("overlay").classList.add("open");
+}
+function closePanel(){document.getElementById("overlay").classList.remove("open");}
+function closeDetail(e){if(e.target===document.getElementById("overlay"))closePanel();}
+initP1();
+</script>
+
+<script>
+// PWA 서비스워커 등록
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('[PWA] 서비스워커 등록 완료:', reg.scope))
+      .catch(err => console.log('[PWA] 서비스워커 등록 실패:', err));
+  });
+}
+
+// iOS Safari에서 홈 화면 추가 안내 배너
+function showInstallBanner() {
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isInStandalone = ('standalone' in navigator) && navigator.standalone;
+  const bannerDismissed = localStorage.getItem('pwa-banner-dismissed');
+  
+  if (isIOS && !isInStandalone && !bannerDismissed) {
+    setTimeout(() => {
+      const banner = document.createElement('div');
+      banner.id = 'install-banner';
+      banner.style.cssText = `
+        position:fixed;bottom:calc(60px + env(safe-area-inset-bottom));left:50%;
+        transform:translateX(-50%);background:#252220;border:1px solid #4ECDC4;
+        border-radius:12px;padding:12px 16px;width:calc(100% - 32px);max-width:380px;
+        z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,.5);
+        display:flex;align-items:center;gap:10px;font-family:inherit;
+      `;
+      banner.innerHTML = `
+        <img src="icons/icon-72.png" style="width:40px;height:40px;border-radius:8px;flex-shrink:0">
+        <div style="flex:1">
+          <div style="font-size:12px;font-weight:700;color:#F0EDE8;margin-bottom:2px">홈 화면에 추가하기</div>
+          <div style="font-size:10px;color:#7A7268;line-height:1.4">
+            Safari 하단의 <span style="color:#4ECDC4">공유 버튼 →</span> 홈 화면에 추가
+          </div>
+        </div>
+        <button onclick="document.getElementById('install-banner').remove();localStorage.setItem('pwa-banner-dismissed','1')"
+          style="background:none;border:none;color:#7A7268;font-size:18px;cursor:pointer;padding:4px;flex-shrink:0">✕</button>
+      `;
+      document.body.appendChild(banner);
+    }, 3000);
+  }
+}
+
+// Android/Chrome 설치 프롬프트
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  const btn = document.createElement('button');
+  btn.id = 'install-btn';
+  btn.style.cssText = `
+    position:fixed;bottom:calc(70px + env(safe-area-inset-bottom));right:16px;
+    background:#4ECDC4;color:#1C1A17;border:none;border-radius:24px;
+    padding:10px 18px;font-size:12px;font-weight:700;cursor:pointer;
+    font-family:inherit;z-index:1000;box-shadow:0 4px 16px rgba(78,205,196,.4);
+    display:flex;align-items:center;gap:6px;
+  `;
+  btn.innerHTML = '📲 앱 설치';
+  btn.onclick = async () => {
+    btn.remove();
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log('[PWA] 설치 결과:', outcome);
+    deferredPrompt = null;
+  };
+  document.body.appendChild(btn);
+});
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('install-btn')?.remove();
+  console.log('[PWA] 앱 설치 완료!');
+});
+
+showInstallBanner();
+</script>
+</body>
+</html>
