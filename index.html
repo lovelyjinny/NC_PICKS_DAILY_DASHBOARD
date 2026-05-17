@@ -251,7 +251,7 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
 .dp-close{width:26px;height:26px;border-radius:6px;border:1px solid var(--border2);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text3);flex-shrink:0}
 .dp-body{padding:16px 20px}
 .dp-krow{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
-@media(min-width:500px){.dp-krow{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:500px){.dp-krow{grid-template-columns:repeat(5,1fr)}}
 .dp-kpi{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
 .dp-kpi-l{font-size:8px;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
 .dp-kpi-v{font-size:16px;font-weight:700;font-family:"DM Mono",monospace;line-height:1}
@@ -892,7 +892,10 @@ function openDetail(bn){
   document.getElementById("dp-meta").textContent=(brInfo.type||"")+" · "+(DATA.date||"")+" 기준 · "+dpDays+"일분";
   const totC=cells.reduce((s,c)=>s+(c.total||0),0),totN=cells.reduce((s,c)=>s+(c.net||0),0),totCo=cells.reduce((s,c)=>s+(c.cost||0),0),totLy=cells.reduce((s,c)=>s+(c.ly||0),0),totInv=cells.reduce((s,c)=>s+(c.inv_amt||0),0),totDed=cells.reduce((s,c)=>s+(c.ded||0),0);
   const avgMg=totC>0?((1-(totCo-totDed)/(totC/1.1))*100).toFixed(1):null,sellR=totCo+totInv>0?(totCo/(totCo+totInv)*100).toFixed(1):null,gro=totLy>0?((totC/totLy-1)*100).toFixed(1):null;
-  document.getElementById("dp-krow").innerHTML=`<div class="dp-kpi"><div class="dp-kpi-l">누계 실적</div><div class="dp-kpi-v" style="color:var(--teal)">${f8(totC)}</div><div class="dp-kpi-s">일평균 ${f8(totC/dpDays)}</div></div><div class="dp-kpi"><div class="dp-kpi-l">매총율</div><div class="dp-kpi-v" style="color:var(--pink)">${avgMg?avgMg+"%":"—"}</div><div class="dp-kpi-s">1-(원가-환입)/(외형/1.1)</div></div><div class="dp-kpi"><div class="dp-kpi-l">판매율</div><div class="dp-kpi-v" style="color:var(--yellow)">${sellR?sellR+"%":"—"}</div><div class="dp-kpi-s">원가/입고원가</div></div><div class="dp-kpi"><div class="dp-kpi-l">전년 성장</div><div class="dp-kpi-v" style="color:${gro&&+gro>=0?"var(--green)":"var(--red)"}">${gro?(+gro>=0?"+":"")+gro+"%":"—"}</div><div class="dp-kpi-s">YoY</div></div>`;
+  const totArea=cells.reduce((s,c)=>s+(c.area||0),0);
+  const ndays=(DATA.today_m&&DATA.today_m["영업일수"])||dpDays;
+  const pmStore=totArea>0?Math.round(totC/totArea/ndays):null;
+  document.getElementById("dp-krow").innerHTML=`<div class="dp-kpi"><div class="dp-kpi-l">누계 실적</div><div class="dp-kpi-v" style="color:var(--teal)">${f8(totC)}</div><div class="dp-kpi-s">일평균 ${f8(totC/dpDays)}</div></div><div class="dp-kpi"><div class="dp-kpi-l">평매출</div><div class="dp-kpi-v" style="color:var(--purple)">${pmStore?pmStore.toLocaleString()+"원":"—"}</div><div class="dp-kpi-s">매출/평수/일수</div></div><div class="dp-kpi"><div class="dp-kpi-l">매총율</div><div class="dp-kpi-v" style="color:var(--pink)">${avgMg?avgMg+"%":"—"}</div><div class="dp-kpi-s">1-(원가-환입)/(외형/1.1)</div></div><div class="dp-kpi"><div class="dp-kpi-l">판매율</div><div class="dp-kpi-v" style="color:var(--yellow)">${sellR?sellR+"%":"—"}</div><div class="dp-kpi-s">원가/입고원가</div></div><div class="dp-kpi"><div class="dp-kpi-l">전년 성장</div><div class="dp-kpi-v" style="color:${gro&&+gro>=0?"var(--green)":"var(--red)"}">${gro?(+gro>=0?"+":"")+gro+"%":"—"}</div><div class="dp-kpi-s">YoY</div></div>`;
   if(dpChart){dpChart.destroy();dpChart=null;}
 try{  dpChart=new Chart(document.getElementById("dp-chart"),{type:"line",data:{labels:dayData.map(r=>r.d),datasets:[{label:"실적",data:dayData.map(r=>r.t),borderColor:"var(--teal)",backgroundColor:"rgba(212,149,107,.1)",borderWidth:2,pointRadius:3,pointBackgroundColor:"var(--teal)",fill:true,tension:0.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>f8(c.raw)}}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>f8(v)}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
   const ctbl=document.getElementById("dp-ctbl");ctbl.innerHTML="";
