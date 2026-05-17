@@ -356,7 +356,7 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
       <div class="sum-card sc4"><div class="sum-dot" style="background:var(--pink)"></div><div class="sum-label">집계 지점</div><div class="sum-num" style="color:var(--pink);font-size:24px" id="s-br">—</div><div class="sum-sub">개 지점</div></div>
     </div>
     <div class="card">
-      <div class="card-t">일별 매출 추이<div class="leg"><span><span class="dot" style="background:var(--teal)"></span>실적</span><span><span style="width:12px;height:1.5px;background:var(--yellow);display:inline-block"></span>목표</span><span><span style="width:12px;height:1.5px;background:#555;display:inline-block"></span>전년</span></div></div>
+      <div class="card-t">일별 매출 추이<div class="leg"><span><span class="dot" style="background:var(--teal)"></span>실적</span><span><span style="width:12px;height:1.5px;background:var(--yellow);display:inline-block"></span>목표</span><span><span style="width:12px;height:2px;background:rgba(122,190,224,.95);display:inline-block"></span>전년</span></div></div>
       <div style="position:relative;height:180px"><canvas id="c-daily"></canvas></div>
     </div>
     <div class="g2e">
@@ -673,7 +673,7 @@ document.getElementById("s-br").textContent=branches.length;
 try{chartDaily=new Chart(document.getElementById("c-daily"),{type:"bar",data:{labels:daily.map(r=>r.d),datasets:[
   {label:"실적",data:daily.map(r=>r.t),backgroundColor:"rgba(212,149,107,.7)",borderRadius:4,order:2},
   {label:"목표",data:daily.map(r=>r.target),type:"line",borderColor:"rgba(232,196,156,.6)",borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false,order:1},
-  {label:"전년",data:daily.map(r=>r.ly),type:"line",borderColor:"rgba(100,95,90,.5)",borderWidth:1,borderDash:[3,3],pointRadius:0,fill:false,order:1},
+  {label:"전년",data:daily.map(r=>r.ly),type:"line",borderColor:"rgba(122,190,224,.95)",borderWidth:2,borderDash:[6,3],pointRadius:0,fill:false,order:0},
 ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:"rgba(25,22,18,.95)",borderColor:"rgba(255,255,255,.1)",borderWidth:1,padding:8,callbacks:{label:c=>c.dataset.label+": "+f8(c.raw)}}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>f8(v)}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
 
 try{chartCellBar=new Chart(document.getElementById("c-cell-bar"),{type:"bar",data:{labels:["남성","여성","아동"],datasets:[{data:[cellTot["남성"],cellTot["여성"],cellTot["아동"]],backgroundColor:["rgba(212,149,107,.7)","rgba(192,107,92,.7)","rgba(232,196,156,.7)"],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:10}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:10},callback:v=>f8(v)}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
