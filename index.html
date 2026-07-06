@@ -175,6 +175,7 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
 .sc2::before{background:linear-gradient(90deg,var(--purple),#8048c0)}
 .sc3::before{background:linear-gradient(90deg,var(--yellow),#e5b030)}
 .sc4::before{background:linear-gradient(90deg,var(--pink),#e0457a)}
+.sc5::before{background:linear-gradient(90deg,var(--green),#8aae4a)}
 .sum-dot{width:6px;height:6px;border-radius:50%;margin-bottom:6px}
 .sum-label{font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:500}
 .sum-num{font-family:"DM Mono",monospace;font-weight:700;line-height:1}
@@ -358,7 +359,7 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
       <div class="sum-card sc1"><div class="sum-dot" style="background:var(--teal)"></div><div class="sum-label">남성</div><div class="sum-num" style="color:var(--teal);font-size:24px" id="s-m">—</div><div class="sum-sub" id="s-ms">—</div></div>
       <div class="sum-card sc2"><div class="sum-dot" style="background:var(--purple)"></div><div class="sum-label">여성</div><div class="sum-num" style="color:var(--purple);font-size:24px" id="s-w">—</div><div class="sum-sub" id="s-ws">—</div></div>
       <div class="sum-card sc3"><div class="sum-dot" style="background:var(--yellow)"></div><div class="sum-label">아동</div><div class="sum-num" style="color:var(--yellow);font-size:24px" id="s-k">—</div><div class="sum-sub" id="s-ks">—</div></div>
-      <div class="sum-card"><div class="sum-dot" style="background:var(--green)"></div><div class="sum-label">잡화</div><div class="sum-num" style="color:var(--green);font-size:24px" id="s-j">—</div><div class="sum-sub" id="s-js">—</div></div>
+      <div class="sum-card sc5"><div class="sum-dot" style="background:var(--green)"></div><div class="sum-label">잡화</div><div class="sum-num" style="color:var(--green);font-size:24px" id="s-j">—</div><div class="sum-sub" id="s-js">—</div></div>
       <div class="sum-card sc4"><div class="sum-dot" style="background:var(--pink)"></div><div class="sum-label">집계 지점</div><div class="sum-num" style="color:var(--pink);font-size:24px" id="s-br">—</div><div class="sum-sub">개 지점</div></div>
     </div>
     <div class="card">
@@ -488,7 +489,7 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
       <div class="sum-card sc1"><div class="sum-dot" style="background:var(--teal)"></div><div class="sum-label">남성 재고</div><div class="sum-num" style="color:var(--teal);font-size:22px" id="i-cm">—</div><div class="sum-sub" id="i-cm-s">—</div></div>
       <div class="sum-card sc2"><div class="sum-dot" style="background:var(--purple)"></div><div class="sum-label">여성 재고</div><div class="sum-num" style="color:var(--purple);font-size:22px" id="i-cw">—</div><div class="sum-sub" id="i-cw-s">—</div></div>
       <div class="sum-card sc3"><div class="sum-dot" style="background:var(--yellow)"></div><div class="sum-label">아동 재고</div><div class="sum-num" style="color:var(--yellow);font-size:22px" id="i-ck">—</div><div class="sum-sub" id="i-ck-s">—</div></div>
-      <div class="sum-card"><div class="sum-dot" style="background:var(--green)"></div><div class="sum-label">잡화 재고</div><div class="sum-num" style="color:var(--green);font-size:22px" id="i-cj">—</div><div class="sum-sub" id="i-cj-s">—</div></div>
+      <div class="sum-card sc5"><div class="sum-dot" style="background:var(--green)"></div><div class="sum-label">잡화 재고</div><div class="sum-num" style="color:var(--green);font-size:22px" id="i-cj">—</div><div class="sum-sub" id="i-cj-s">—</div></div>
       <div class="sum-card sc4"><div class="sum-dot" style="background:var(--pink)"></div><div class="sum-label">재고 보유 지점</div><div class="sum-num" style="color:var(--pink);font-size:22px" id="i-brc">—</div><div class="sum-sub">개 지점</div></div>
     </div>
     <div class="card"><div class="card-t">지점별 재고금액 TOP 12<div class="type-filter" id="inv-bar-filter" style="margin-left:auto"><button class="tf-btn on" data-t="전체">전체</button><button class="tf-btn" data-t="픽스 직영점">픽스직영</button><button class="tf-btn" data-t="픽스 키즈">픽스키즈</button><button class="tf-btn" data-t="중간관리">중간관리</button><button class="tf-btn" data-t="기타">기타</button></div></div><div id="inv-bars"></div></div>
