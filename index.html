@@ -41,11 +41,13 @@
   --bg:#EBE3D4;--bg2:#FFFFFF;--bg3:#E2D8C5;--bg4:#D6CBB4;
   --border:#D6CCB8;--border2:#C5B9A1;
   --text:#2A2018;--text2:#5C5044;--text3:#8A7C6C;
-  --teal:#B0692F;--teal-bg:rgba(176,105,47,0.11);
-  --pink:#B14A3A;--pink-bg:rgba(177,74,58,0.10);
-  --yellow:#A9791A;--yellow-bg:rgba(169,121,26,0.13);
-  --purple:#7C5B39;--purple-bg:rgba(124,91,57,0.10);
-  --green:#5E7D2E;--green-bg:rgba(94,125,46,0.13);
+  /* 카테고리 색 (2026-08-05 지니님: 브라운톤 일색이라 구분 안 됨 → 검증된 구분색으로)
+     남성=파랑 여성=보라 아동=앰버 잡화=초록 강조=로즈. 베이지 배경 대비 4:1↑, 색각이상 검증 통과 */
+  --teal:#0067B7;--teal-bg:rgba(0,103,183,0.10);
+  --pink:#96306C;--pink-bg:rgba(150,48,108,0.10);
+  --yellow:#9A4C00;--yellow-bg:rgba(154,76,0,0.11);
+  --purple:#8E3B94;--purple-bg:rgba(142,59,148,0.10);
+  --green:#007D4B;--green-bg:rgba(0,125,75,0.11);
   --red:#C0392B;--red-bg:rgba(192,57,43,0.10);
   --max-w:1280px;
   --nav-h:56px;
@@ -171,11 +173,11 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
 .sum-row,.sum-row5{display:grid;gap:8px;margin-bottom:12px}
 .sum-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;position:relative;overflow:hidden}
 .sum-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px}
-.sc1::before{background:linear-gradient(90deg,var(--teal),#2aa8a0)}
-.sc2::before{background:linear-gradient(90deg,var(--purple),#8048c0)}
-.sc3::before{background:linear-gradient(90deg,var(--yellow),#e5b030)}
-.sc4::before{background:linear-gradient(90deg,var(--pink),#e0457a)}
-.sc5::before{background:linear-gradient(90deg,var(--green),#8aae4a)}
+.sc1::before{background:linear-gradient(90deg,var(--teal),#3D94E0)}
+.sc2::before{background:linear-gradient(90deg,var(--purple),#B565BB)}
+.sc3::before{background:linear-gradient(90deg,var(--yellow),#C97A2B)}
+.sc4::before{background:linear-gradient(90deg,var(--pink),#C05A95)}
+.sc5::before{background:linear-gradient(90deg,var(--green),#2EA36F)}
 .sum-dot{width:6px;height:6px;border-radius:50%;margin-bottom:6px}
 .sum-label{font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:500}
 .sum-num{font-family:"DM Mono",monospace;font-weight:700;line-height:1}
@@ -194,15 +196,15 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
 .tbl td{padding:9px 8px;border-bottom:1px solid var(--border);color:var(--text);font-size:13.5px}
 .tbl td:first-child{color:var(--text);font-weight:500}
 .tbl tbody tr:nth-child(even) td{background:rgba(0,0,0,0.022)}
-.tbl tbody tr:hover td{background:rgba(212,149,107,0.05);cursor:pointer}
+.tbl tbody tr:hover td{background:rgba(90,80,68,0.06);cursor:pointer}
 .tbl tr:last-child td{border-bottom:none}
 .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-height:560px;overflow-y:auto}
 
 /* ── 필 ── */
 .pill{display:inline-block;font-size:11px;padding:2px 6px;border-radius:20px;font-family:"DM Mono",monospace}
-.pg{background:var(--green-bg);color:var(--green);border:1px solid rgba(168,184,108,.2)}
+.pg{background:var(--green-bg);color:var(--green);border:1px solid rgba(0,125,75,.2)}
 .pr{background:var(--red-bg);color:var(--red);border:1px solid rgba(194,84,80,.2)}
-.pa{background:var(--yellow-bg);color:var(--yellow);border:1px solid rgba(232,196,156,.2)}
+.pa{background:var(--yellow-bg);color:var(--yellow);border:1px solid rgba(154,76,0,.2)}
 
 /* ── 유형 카드 ── */
 .type-grid{display:grid;gap:8px;margin-bottom:12px}
@@ -365,7 +367,7 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
       <div class="sum-card sc4"><div class="sum-dot" style="background:var(--pink)"></div><div class="sum-label">집계 지점</div><div class="sum-num" style="color:var(--pink);font-size:24px" id="s-br">—</div><div class="sum-sub">개 지점</div></div>
     </div>
     <div class="card">
-      <div class="card-t">일별 매출 추이<div class="leg"><span><span class="dot" style="background:var(--teal)"></span>실적</span><span><span style="width:12px;height:1.5px;background:var(--yellow);display:inline-block"></span>목표</span><span><span style="width:12px;height:2px;background:rgba(122,190,224,.95);display:inline-block"></span>전년</span></div></div>
+      <div class="card-t">일별 매출 추이<div class="leg"><span><span class="dot" style="background:var(--teal)"></span>실적</span><span><span style="width:12px;height:1.5px;background:var(--yellow);display:inline-block"></span>목표</span><span><span style="width:12px;height:2px;background:rgba(122,110,96,.9);display:inline-block"></span>전년</span></div></div>
       <div style="position:relative;height:180px"><canvas id="c-daily"></canvas></div>
     </div>
     <div class="g2e">
@@ -626,7 +628,7 @@ const f8=v=>{if(!v&&v!==0)return"—";const a=Math.abs(v);if(a>=1e8)return(v/1e8
 const fn=v=>Math.round(v||0).toLocaleString();
 const fp=v=>v!=null?v.toFixed(1)+"%":"—";
 const gc="rgba(0,0,0,0.06)",lc="rgba(90,80,68,0.65)";
-const CC={남성:"#BF6A34",여성:"#B75244",아동:"#B8860B",잡화:"#5E7D2E"};
+const CC={남성:"#0067B7",여성:"#8E3B94",아동:"#9A4C00",잡화:"#007D4B"};  /* CSS 변수와 동일 (2026-08-05) */
 const TC={"픽스 직영점":"#BF6A34","픽스 키즈":"#8A6A47",중간관리:"#B8860B",기타:"#8A8074"};
 const ptitles={p0:"일매출 현황",p1:"지점별 실적",p2:"지점 유형별",p3:"월별 트렌드",p4:"입고·판매",p5:"재고 현황",p6:"픽스 평매출",p7:"OPR 물류현황"};
 if(typeof Chart==="undefined"){window.Chart=function(){return{destroy:function(){}};};window.Chart.defaults={color:null,borderColor:null};console.warn("Chart.js 로드 실패 - 차트 없이 표시");}
@@ -726,16 +728,16 @@ document.getElementById("s-br").textContent=branches.length;
 ["ms","ws","ks","js"].forEach((id,i)=>{const cn=["남성","여성","아동","잡화"][i];document.getElementById("s-"+id).textContent=f8(cellTot[cn]/8)+" 일평균";});
 
 try{chartDaily=new Chart(document.getElementById("c-daily"),{type:"bar",data:{labels:daily.map(r=>r.d),datasets:[
-  {label:"실적",data:daily.map(r=>r.t),backgroundColor:"rgba(212,149,107,.7)",borderRadius:4,order:2},
-  {label:"목표",data:daily.map(r=>r.target),type:"line",borderColor:"rgba(232,196,156,.6)",borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false,order:1},
-  {label:"전년",data:daily.map(r=>r.ly),type:"line",borderColor:"rgba(122,190,224,.95)",borderWidth:2,borderDash:[6,3],pointRadius:0,fill:false,order:0},
+  {label:"실적",data:daily.map(r=>r.t),backgroundColor:"rgba(0,103,183,.65)",borderRadius:4,order:2},
+  {label:"목표",data:daily.map(r=>r.target),type:"line",borderColor:"rgba(154,76,0,.55)",borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false,order:1},
+  {label:"전년",data:daily.map(r=>r.ly),type:"line",borderColor:"rgba(122,110,96,.9)",borderWidth:2,borderDash:[6,3],pointRadius:0,fill:false,order:0},
 ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:"rgba(25,22,18,.95)",borderColor:"rgba(255,255,255,.1)",borderWidth:1,padding:8,callbacks:{label:c=>c.dataset.label+": "+f8(c.raw)}}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>f8(v)}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
 
-try{chartCellBar=new Chart(document.getElementById("c-cell-bar"),{type:"bar",data:{labels:["남성","여성","아동","잡화"],datasets:[{data:[cellTot["남성"],cellTot["여성"],cellTot["아동"],cellTot["잡화"]],backgroundColor:["rgba(212,149,107,.7)","rgba(192,107,92,.7)","rgba(232,196,156,.7)","rgba(94,125,46,.7)"],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:10}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:10},callback:v=>f8(v)}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
+try{chartCellBar=new Chart(document.getElementById("c-cell-bar"),{type:"bar",data:{labels:["남성","여성","아동","잡화"],datasets:[{data:[cellTot["남성"],cellTot["여성"],cellTot["아동"],cellTot["잡화"]],backgroundColor:["rgba(0,103,183,.7)","rgba(142,59,148,.7)","rgba(154,76,0,.7)","rgba(0,125,75,.7)"],borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:10}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:10},callback:v=>f8(v)}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
 
 const cTotArr=[cellTot["남성"],cellTot["여성"],cellTot["아동"],cellTot["잡화"]];
 const totAll2=cTotArr.reduce((a,b)=>a+b,0);
-try{chartPie=new Chart(document.getElementById("c-pie"),{type:"doughnut",data:{labels:["남성","여성","아동","잡화"],datasets:[{data:cTotArr,backgroundColor:["rgba(212,149,107,.8)","rgba(192,107,92,.8)","rgba(232,196,156,.8)","rgba(94,125,46,.8)"],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:"62%",plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+": "+f8(c.raw)}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
+try{chartPie=new Chart(document.getElementById("c-pie"),{type:"doughnut",data:{labels:["남성","여성","아동","잡화"],datasets:[{data:cTotArr,backgroundColor:["rgba(0,103,183,.8)","rgba(142,59,148,.8)","rgba(154,76,0,.8)","rgba(0,125,75,.8)"],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:"62%",plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+": "+f8(c.raw)}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
 const lg=document.getElementById("cell-leg");
 ["남성","여성","아동","잡화"].forEach((cn,i)=>{lg.innerHTML+=`<span style="display:flex;align-items:center;gap:3px"><span style="width:6px;height:6px;border-radius:50%;background:${CC[cn]};display:inline-block"></span>${cn} ${Math.round(cTotArr[i]/totAll2*100)}%</span>`;});
 
@@ -758,7 +760,7 @@ function initP1(filtered){
   document.getElementById("b-sell").textContent=_pool>0?(_sc/_pool*100).toFixed(1)+"%":"—";
   document.getElementById("b-mg").textContent=mgVals.length?(mgVals.reduce((s,v)=>s+v,0)/mgVals.length).toFixed(1)+"%":"—";
   const bMax=filtered[0]?.total||1,bb=document.getElementById("branch-bars");bb.innerHTML="";
-  filtered.slice(0,15).forEach((b,i)=>{const op=Math.max(1-i*0.04,.35);bb.innerHTML+=`<div class="br"><div class="bn" title="${b.name}">${b.name}</div><div class="bg2b"><div class="bf" style="width:${Math.round(b.total/bMax*100)}%;background:rgba(212,149,107,${op})"></div></div><div class="bv">${f8(b.total)}</div></div>`;});
+  filtered.slice(0,15).forEach((b,i)=>{const op=Math.max(1-i*0.04,.35);bb.innerHTML+=`<div class="br"><div class="bn" title="${b.name}">${b.name}</div><div class="bg2b"><div class="bf" style="width:${Math.round(b.total/bMax*100)}%;background:rgba(0,103,183,${op})"></div></div><div class="bv">${f8(b.total)}</div></div>`;});
   const btbl=document.getElementById("branch-tbl");btbl.innerHTML="";
   const totAllBr=filtered.reduce((s,x)=>s+(x.total||0),0);
   filtered.forEach((b,i)=>{const tc=TC[b.type]||"#7A7268";
@@ -790,8 +792,8 @@ const bestT=trend.reduce((a,b)=>a.sales>b.sales?a:b,{sales:0,ym:"—"}),latT=tre
 document.getElementById("tr-best").textContent=f8(bestT.sales);document.getElementById("tr-best-d").textContent=bestT.ym;
 document.getElementById("tr-mg").textContent=fp(latT.margin);document.getElementById("tr-sr").textContent=fp(latT.sell_rate);
 const lbl=trend.map(r=>r.ym.slice(2));
-try{new Chart(document.getElementById("c-trend"),{type:"bar",data:{labels:lbl,datasets:[{label:"매출",data:trend.map(r=>r.sales),backgroundColor:trend.map(r=>r.ym.startsWith("2026")?"rgba(212,149,107,.75)":"rgba(212,149,107,.28)"),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>f8(c.raw)}}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>f8(v)}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
-try{new Chart(document.getElementById("c-tr-mg"),{type:"line",data:{labels:lbl,datasets:[{label:"매총율%",data:trend.map(r=>r.margin),borderColor:"#C06B5C",backgroundColor:"rgba(192,107,92,.1)",borderWidth:2,pointRadius:2,fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>v+"%"}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
+try{new Chart(document.getElementById("c-trend"),{type:"bar",data:{labels:lbl,datasets:[{label:"매출",data:trend.map(r=>r.sales),backgroundColor:trend.map(r=>r.ym.startsWith("2026")?"rgba(0,103,183,.75)":"rgba(0,103,183,.25)"),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>f8(c.raw)}}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>f8(v)}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
+try{new Chart(document.getElementById("c-tr-mg"),{type:"line",data:{labels:lbl,datasets:[{label:"매총율%",data:trend.map(r=>r.margin),borderColor:"#96306C",backgroundColor:"rgba(150,48,108,.08)",borderWidth:2,pointRadius:2,fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>v+"%"}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
 try{new Chart(document.getElementById("c-tr-st"),{type:"line",data:{labels:lbl,datasets:[{label:"재고",data:trend.map(r=>(r.stock||0)/1e9),borderColor:"#A88A6A",backgroundColor:"rgba(168,138,106,.1)",borderWidth:2,pointRadius:2,fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>v+"B"}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
 
 // P4
@@ -823,7 +825,7 @@ document.getElementById("sm-noiq").textContent=noiq+"일";
 document.getElementById("sm-sl-win").textContent=slWin+"일";
 document.getElementById("sm-best-rt").textContent=bestRtRow.d+" ("+Math.round(bestRtRow.r*100)+"%)";
 document.getElementById("sm-days").textContent=smDays+"일";
-try{new Chart(document.getElementById("c-sm"),{type:"bar",data:{labels:sm.map(r=>r.d),datasets:[{label:"입고량",data:sm.map(r=>r.iq),backgroundColor:"rgba(77,159,255,.65)",borderRadius:4},{label:"판매량",data:sm.map(r=>r.sq),backgroundColor:"rgba(212,149,107,.65)",borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+": "+fn(c.raw)}}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>fn(v)}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
+try{new Chart(document.getElementById("c-sm"),{type:"bar",data:{labels:sm.map(r=>r.d),datasets:[{label:"입고량",data:sm.map(r=>r.iq),backgroundColor:"rgba(77,159,255,.65)",borderRadius:4},{label:"판매량",data:sm.map(r=>r.sq),backgroundColor:"rgba(0,125,75,.65)",borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+": "+fn(c.raw)}}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>fn(v)}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
 
 // P5
 const noWh=inv.filter(r=>r.name!=="물류 센타"),negItems=inv.filter(r=>r.neg_q<0 && r.name!=="물류 센타"),whItems=inv.filter(r=>r.name==="물류 센타");
@@ -888,7 +890,7 @@ const tv=fix.filter(r=>r.tcr),mv=fix.filter(r=>r.margin);
 document.getElementById("fx-tcr").textContent=tv.length?(tv.reduce((s,r)=>s+r.tcr,0)/tv.length).toFixed(1)+"%":"—";
 document.getElementById("fx-mg").textContent=mv.length?(mv.reduce((s,r)=>s+r.margin,0)/mv.length).toFixed(1)+"%":"—";
 const fxBr=[...new Set(fix.map(r=>r.name))];
-try{new Chart(document.getElementById("c-fx"),{type:"bar",data:{labels:fxBr,datasets:["남성","여성","아동","잡화"].map((cn,ci)=>{const cols=["rgba(212,149,107,.75)","rgba(192,107,92,.75)","rgba(232,196,156,.75)","rgba(94,125,46,.75)"];return{label:cn,data:fxBr.map(b=>{const r=fix.find(r=>r.name===b&&r.cell===cn);return r?r.pm:0;}),backgroundColor:cols[ci],borderRadius:3,barPercentage:0.7};})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:"top",labels:{color:lc,font:{size:10},boxWidth:10}},tooltip:{callbacks:{label:c=>c.dataset.label+": "+fn(Math.round(c.raw))+"원/평"}}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>fn(Math.round(v))}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
+try{new Chart(document.getElementById("c-fx"),{type:"bar",data:{labels:fxBr,datasets:["남성","여성","아동","잡화"].map((cn,ci)=>{const cols=["rgba(0,103,183,.75)","rgba(142,59,148,.75)","rgba(154,76,0,.75)","rgba(0,125,75,.75)"];return{label:cn,data:fxBr.map(b=>{const r=fix.find(r=>r.name===b&&r.cell===cn);return r?r.pm:0;}),backgroundColor:cols[ci],borderRadius:3,barPercentage:0.7};})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:"top",labels:{color:lc,font:{size:10},boxWidth:10}},tooltip:{callbacks:{label:c=>c.dataset.label+": "+fn(Math.round(c.raw))+"원/평"}}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>fn(Math.round(v))}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
 const ft=document.getElementById("fx-tbl");
 const fixSorted=fix.slice().sort((a,b)=>(b.pm||0)-(a.pm||0));
 const rankMap={};fixSorted.forEach((r,i)=>{rankMap[r.name+"_"+r.cell]=i+1;});
@@ -965,7 +967,7 @@ function openDetail(bn){
   const pmStore=totArea>0?Math.round(totC/totArea/ndays):null;
   document.getElementById("dp-krow").innerHTML=`<div class="dp-kpi"><div class="dp-kpi-l">누계 실적</div><div class="dp-kpi-v" style="color:var(--teal)">${f8(totC)}</div><div class="dp-kpi-s">일평균 ${f8(totC/dpDays)}</div></div><div class="dp-kpi"><div class="dp-kpi-l">평매출</div><div class="dp-kpi-v" style="color:var(--purple)">${pmStore?pmStore.toLocaleString()+"원":"—"}</div><div class="dp-kpi-s">매출/평수/일수</div></div><div class="dp-kpi"><div class="dp-kpi-l">매총율</div><div class="dp-kpi-v" style="color:var(--pink)">${avgMg?avgMg+"%":"—"}</div><div class="dp-kpi-s">1-(원가-환입)/(외형/1.1)</div></div><div class="dp-kpi"><div class="dp-kpi-l">판매율</div><div class="dp-kpi-v" style="color:var(--yellow)">${sellR?sellR+"%":"—"}</div><div class="dp-kpi-s">원가/입고원가</div></div><div class="dp-kpi"><div class="dp-kpi-l">전년 성장</div><div class="dp-kpi-v" style="color:${gro&&+gro>=0?"var(--green)":"var(--red)"}">${gro?(+gro>=0?"+":"")+gro+"%":"—"}</div><div class="dp-kpi-s">YoY</div></div>`;
   if(dpChart){dpChart.destroy();dpChart=null;}
-try{  dpChart=new Chart(document.getElementById("dp-chart"),{type:"line",data:{labels:dayData.map(r=>r.d),datasets:[{label:"실적",data:dayData.map(r=>r.t),borderColor:"var(--teal)",backgroundColor:"rgba(212,149,107,.1)",borderWidth:2,pointRadius:3,pointBackgroundColor:"var(--teal)",fill:true,tension:0.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>f8(c.raw)}}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>f8(v)}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
+try{  dpChart=new Chart(document.getElementById("dp-chart"),{type:"line",data:{labels:dayData.map(r=>r.d),datasets:[{label:"실적",data:dayData.map(r=>r.t),borderColor:"var(--teal)",backgroundColor:"rgba(0,103,183,.08)",borderWidth:2,pointRadius:3,pointBackgroundColor:"var(--teal)",fill:true,tension:0.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>f8(c.raw)}}},scales:{x:{grid:{color:gc},ticks:{color:lc,font:{size:9}}},y:{grid:{color:gc},ticks:{color:lc,font:{size:9},callback:v=>f8(v)}}}}});}catch(e){console.warn("[Chart 실패]",e&&e.message);}
   const ctbl=document.getElementById("dp-ctbl");ctbl.innerHTML="";
   cells.forEach(c=>{const g=c.growth;ctbl.innerHTML+=`<tr><td style="color:${CC[c.cell]||"var(--text)"}">${c.cell}</td><td style="text-align:right">${f8(c.total)}</td><td style="text-align:right;color:var(--text3)">${c.ly?f8(c.ly):"—"}</td><td style="text-align:right;color:${g&&+g>=0?"var(--green)":"var(--red)"}">${g?(+g>=0?"+":"")+g+"%":"—"}</td><td style="text-align:right">${pil(c.sell_rate||0,30,15)}</td><td style="text-align:right">${pil(c.margin||0,20,0)}</td><td style="text-align:right;color:var(--purple)">${c.pm?c.pm.toLocaleString()+"원/평":"—"}</td></tr>`;});
   const diag=document.getElementById("dp-diag");diag.innerHTML="";
