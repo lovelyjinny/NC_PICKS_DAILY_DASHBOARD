@@ -549,7 +549,7 @@ body{font-family:"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text
     <div class="krow">
       <div class="kpi"><div class="kpi-l">센터 재고비중 <span style="font-size:9px;color:var(--text3)" id="lg-ratio-s">신상</span></div><div class="kpi-v" id="lg-ratio" style="color:var(--purple);font-size:22px">—</div><div class="kpi-d" id="lg-ratio-d">전체 재고 대비</div></div>
       <div class="kpi"><div class="kpi-l">출고율 <span style="font-size:9px;color:var(--text3)">연누적</span></div><div class="kpi-v" id="lg-rate" style="color:var(--teal);font-size:22px">—</div><div class="kpi-d" id="lg-rate-d">출고액 ÷ 입고액</div></div>
-      <div class="kpi"><div class="kpi-l">물류 재고일수 <span style="font-size:9px;color:var(--text3)" id="lg-days-s">신상</span></div><div class="kpi-v" id="lg-days" style="color:var(--yellow);font-size:22px">—</div><div class="kpi-d" id="lg-days-d">회사 공식</div></div>
+      <div class="kpi"><div class="kpi-l">물류 재고일수 <span style="font-size:9px;color:var(--text3)" id="lg-days-s">전 시즌</span></div><div class="kpi-v" id="lg-days" style="color:var(--yellow);font-size:22px">—</div><div class="kpi-d" id="lg-days-d">회사 공식</div></div>
       <div class="kpi"><div class="kpi-l">점 재고일수 <span style="font-size:9px;color:var(--text3)">전 시즌</span></div><div class="kpi-v" id="lg-sdays" style="color:#4D9FFF;font-size:22px">—</div><div class="kpi-d" id="lg-sdays-d">매장 재고</div></div>
     </div>
     <div class="krow">
@@ -1131,9 +1131,10 @@ showInstallBanner();
     S('lg-ratio-d','전체 기준 '+pc(L.dc_ratio)+' · '+sl+' 센터 '+eok(L.dc_inv_season||0));
     S('lg-rate',  pc(L.out_rate));
     S('lg-rate-d','누적출고 '+eok(L.out_amt_ytd)+' ÷ 입고 '+eok(L.in_amt_calc));
-    S('lg-days-s', sl+' 신상');
-    S('lg-days',  Math.round(L.dc_days_season!=null?L.dc_days_season:L.dc_days)+'일');
-    S('lg-days-d','총(전 시즌) '+Math.round(L.dc_days)+'일 · 회사 공식');
+    /* 재고일수는 총(전 시즌)이 메인, 신상은 주석 — 지니님 2026-08-05 */
+    S('lg-days-s', '전 시즌');
+    S('lg-days',  Math.round(L.dc_days)+'일');
+    S('lg-days-d', sl+' 신상 '+Math.round(L.dc_days_season!=null?L.dc_days_season:0)+'일 · 회사 공식');
     S('lg-sdays', Math.round(L.store_days)+'일');
     S('lg-sdays-d', '매장재고 '+eok(L.store_inv_amt));
     S('lg-new',   pc(L.new_ratio));    S('lg-new-a', '2026 시즌 '+eok(L.new_amt));
